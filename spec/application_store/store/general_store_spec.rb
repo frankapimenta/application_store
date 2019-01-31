@@ -1,4 +1,4 @@
-module ApiTokenStore
+module ApplicationStore
   RSpec.describe GeneralStore do
     let(:store) { Hash.new }
     subject { described_class.new store }

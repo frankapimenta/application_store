@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "api_token_store"
+require "application_store"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

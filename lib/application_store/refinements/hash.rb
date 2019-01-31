@@ -1,4 +1,4 @@
-module ApiTokenStore
+module ApplicationStore
   module Refinements
     refine Hash do
       def traverse(&block)

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    api_token_store (0.1.0)
+    application_store (0.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -26,7 +26,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  api_token_store!
+  application_store!
   bundler (~> 2.0)
   rake (~> 10.0)
   rspec (~> 3.0)

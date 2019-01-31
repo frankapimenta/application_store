@@ -1,4 +1,4 @@
-module ApiTokenStore
+module ApplicationStore
   RSpec.describe HashStore do
     specify { expect(described_class.superclass).to eq GeneralStore }
     specify { expect{ described_class.new }.not_to raise_error }

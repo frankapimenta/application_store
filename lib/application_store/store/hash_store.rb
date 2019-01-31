@@ -2,9 +2,9 @@ require 'forwardable'
 require_relative '../refinements/hash'
 require_relative 'general_store'
 
-module ApiTokenStore
+module ApplicationStore
   class HashStore < GeneralStore
-    using ApiTokenStore::Refinements
+    using ApplicationStore::Refinements
     extend Forwardable
     include Enumerable
     def_delegators :store, :clear, :empty?, :has_key?, :to_hash

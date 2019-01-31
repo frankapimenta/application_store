@@ -1,20 +1,20 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "api_token_store/version"
+require "application_store/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "api_token_store"
-  spec.version       = ApiTokenStore::VERSION
+  spec.name          = "application_store"
+  spec.version       = ApplicationStore::VERSION
   spec.authors       = ["Frank Pimenta"]
   spec.email         = ["frankapimenta@gmail.com"]
 
   spec.summary       = %q{Provide an architecture to store application tokens/keys globally}
   spec.description   = """
     Applications need to have global access to a collection of tokens when using microservices.
-    ApiTokenStore provides an architecture to enable the handling and storage of data/tokens globally by applications
+    ApplicationStore provides an architecture to enable the handling and storage of data/tokens globally by applications
   """
-  spec.homepage      = "https://github.com/frankapimenta/api_token_store.git"
+  spec.homepage      = "https://github.com/frankapimenta/application_store.git"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'

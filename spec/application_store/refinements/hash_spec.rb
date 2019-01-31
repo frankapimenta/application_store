@@ -1,4 +1,4 @@
-module ApiTokenStore
+module ApplicationStore
   RSpec.describe Refinements do
     context "when not using Refinements" do
       specify { expect { Hash.new.traverse }.to raise_error NoMethodError, /traverse/ }
@@ -7,7 +7,7 @@ module ApiTokenStore
       let(:hash) { Refine.new }
       before do
         class Refine
-          using ApiTokenStore::Refinements
+          using ApplicationStore::Refinements
           def a
             {}
           end

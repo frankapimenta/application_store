@@ -1,4 +1,4 @@
-module ApiTokenStore
+module ApplicationStore
   class GeneralStore
     attr_reader :store
 
