@@ -16,6 +16,14 @@ module ApplicationStore
       @store.set @name, internal_store
     end
 
+    def rename name
+      old_name, current_store = @name, store
+      @name                   = name.to_sym
+
+      @store.set @name, current_store
+      @store.unset old_name
+    end
+
     def add application_store, force: false
       unless force || get(application_store.name.to_sym).nil?
         raise StandardError, "there is already an application with the same name in the store"

@@ -38,6 +38,21 @@ module ApplicationStore
         specify { expect(subject.name).to eq(:__api_token_auth__default__store__)}
         specify { expect(store.name).to eq(:__api_token_auth__store__store__)}
       end
+      context "#rename" do
+        subject { described_class.new name: 'store' }
+        specify { expect(subject).to respond_to(:rename).with(1).argument }
+        specify "rename repo" do
+          subject.set :boo, :boo
+          expect(subject.get(:boo)).to eq :boo
+          store = subject.store
+          expect(subject.name).to eq :__api_token_auth__store__store__
+          subject.rename '__api_token_bitches__'
+          expect(subject.name).to eq :__api_token_bitches__
+          expect(subject.store).to eq store
+          expect(subject.get(:boo)).to eq :boo
+          expect(subject.instance_variable_get(:@store).store.keys).not_to include :__api_token_auth__store__store__
+        end
+      end
       context "#get" do
         before { store.set :key, :value }
         after  { store.unset :key }
