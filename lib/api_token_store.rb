@@ -5,4 +5,6 @@ module ApiTokenStore
   # Your code goes here...
 end
 
+
 require_relative 'api_token_store/refinements/hash'
+require_relative 'api_token_store/store/general_store'
