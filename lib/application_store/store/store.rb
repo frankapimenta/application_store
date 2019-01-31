@@ -1,4 +1,5 @@
 require 'forwardable'
+require_relative 'hash_store'
 
 module ApplicationStore
   class Store < GeneralStore

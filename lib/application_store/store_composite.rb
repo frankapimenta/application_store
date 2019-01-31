@@ -1,5 +1,6 @@
 require 'forwardable'
 require 'application_store/store/store'
+require 'application_store/store/hash_store'
 require 'application_store/store/global_store'
 
 module ApplicationStore
