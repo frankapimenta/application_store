@@ -51,6 +51,7 @@ RSpec.describe ApplicationStore do
       specify "access app after creating" do
         subject.applications.create name: 'app'
         expect(subject.applications.get :app).to be_instance_of ApplicationStore::Store
+        expect(subject.applications.get(:app).name).to eq :app
       end
     end
   end
