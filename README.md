@@ -1,8 +1,6 @@
-# ApplicationStore
+# Application Store
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/application_store`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Storage for applications store data globally.
 
 ## Installation
 
@@ -22,7 +20,33 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+applications = ApplicationStore.applications
+  => {:__api_token_auth__default__store__ => {}}
+
+some_client  = applications.create name: :some_client
+  => #<ApplicationStore::Store:0x00007faf098b4678 @store=#<ApplicationStore::HashStore:0x00007faf098b4628 @store={:name=>:some_client}>>
+
+some_client.set :github_api_token, 'pretty token'
+  => "pretty_token"
+
+github_token = some_client.get :github_api_token
+  => "pretty_token"
+
+some_client.to_hash
+  => {:name => :some_client, :github_api_token => "pretty token"}
+
+applications.to_hash
+=> {
+        :__api_token_auth__default__store__ => {
+            :some_client => {
+                :name => :some_client,
+                :github_api_token => "pretty token"
+            }
+        }
+    }
+
+```
 
 ## Development
 
