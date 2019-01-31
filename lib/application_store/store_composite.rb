@@ -29,7 +29,7 @@ module ApplicationStore
       store.unset application_store.name
     end
 
-    def create name:, encryption:, secret:
+    def create name:
       add Store.new name: name
     end
 

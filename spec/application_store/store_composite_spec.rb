@@ -193,18 +193,18 @@ module ApplicationStore
       end
       context "#create" do
         after { subject.clear }
-        specify { expect(subject).to respond_to(:create).with_keywords(:name, :encryption, :secret) }
+        specify { expect(subject).to respond_to(:create).with_keywords(:name) }
         specify "returns create store" do
-          expect(subject.create name: 'application_name', encryption: :enc, secret: :secret).to be_instance_of(Store)
+          expect(subject.create name: 'application_name').to be_instance_of(Store)
         end
         specify "created store is added" do
-          subject.create name: 'application_name', encryption: :enc, secret: :secret
+          subject.create name: 'application_name'
           app = subject.get :application_name
           expect(app).to be_instance_of Store
           expect(app.name).to eq :application_name
         end
         specify "returns created app" do
-          expect(subject.create name: 'application_name', encryption: :enc, secret: :secret).to be_instance_of Store
+          expect(subject.create name: 'application_name').to be_instance_of Store
         end
       end
       context "#store" do
