@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    application_store (0.5.0)
+    application_store (0.5.1)
       request_store
 
 GEM
