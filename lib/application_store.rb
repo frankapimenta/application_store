@@ -8,7 +8,11 @@ module ApplicationStore
       StoreComposite.new
     end
   end
-  module_function :applications
+  def rename name
+    applications.rename name
+    applications
+  end
+  module_function :applications, :rename
 end
 
 require_relative 'application_store/store_composite'

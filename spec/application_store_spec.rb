@@ -55,5 +55,15 @@ RSpec.describe ApplicationStore do
         expect(subject.applications.get(:app).name).to eq :app
       end
     end
+    context "#rename" do
+      specify { expect(subject).to respond_to(:rename).with(1).argument }
+      specify "renames store" do
+        expect(subject.applications.instance_variable_get(:@store).store.keys).to include(:__api_token_auth__default__store__)
+        expect(subject.applications.name).to eq :__api_token_auth__default__store__
+        subject.rename 'new-store'
+        expect(subject.applications.name).to eq 'new-store'.to_sym
+        expect(subject.applications.instance_variable_get(:@store).store.keys).not_to include(:__api_token_auth__default__store__)
+      end
+    end
   end
 end
