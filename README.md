@@ -1,6 +1,16 @@
 # Application Store
 
-Storage for applications store data globally.
+Objective: Enable applications to have a storage that can be accessed globally.
+
+When using microservices there are information (like tokens and/or secrets) that need to be stored and accessed globally.
+Application Store provides a structure in order to enable this functionally.
+
+
+Use:
+```ruby
+ApplicationStore.applications(name: 'global-storage')
+```
+to create a global store. See section Usage for more.
 
 ## Installation
 
