@@ -31,6 +31,7 @@ RSpec.describe ApplicationStore do
         subject.applications.add application2
         expect(subject.applications).not_to be_empty
         expect(subject.applications.count).to eq 3
+        expect(subject.applications.to_hash).to eq({__api_token_auth__default__store__: {application0: {name: :application0}, application1: {name: :application1}, application2: {name: :application2}}})
       end
       specify "removes applications" do
         expect(subject.applications).to be_empty
