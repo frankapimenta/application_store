@@ -56,6 +56,18 @@ applications.to_hash
         }
     }
 
+# rename application
+applications.rename 'boo'
+  => {:boo => {...}}
+
+# get a particular store
+applications.get(:some_client) == some_client
+  => true
+
+# delete a store
+applications.unset :some_client
+  => {:boo => { }}
+
 ```
 
 ## Development
