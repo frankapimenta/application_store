@@ -12,7 +12,7 @@ module ApplicationStore
     def initialize global_store: GlobalStore.new, internal_store: HashStore.new, name: nil
       super global_store
       # TODO: why here explicity defined HashStore?
-      @name = name.nil? ? :__api_token_auth__default__store__ : "__api_token_auth__#{name}__store__".to_sym
+      @name = name.nil? ? :__default__store__ : "__#{name}__store__".to_sym
       @store.set @name, internal_store
     end
 

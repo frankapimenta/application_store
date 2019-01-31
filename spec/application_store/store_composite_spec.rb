@@ -8,7 +8,7 @@ module ApplicationStore
     context "initialization" do
       let(:store) { subject.instance_variable_get(:@store) }
       specify { expect(store).to be_a GlobalStore }
-      specify { expect(store).to have_key :__api_token_auth__default__store__ }
+      specify { expect(store).to have_key :__default__store__ }
       specify "default internal store type is HashStore" do
         expect(subject.store).to be_instance_of HashStore
       end
@@ -16,27 +16,27 @@ module ApplicationStore
         expect(described_class.new(internal_store: Hash.new).store).to be_instance_of Hash
       end
       specify "default name is :default_store" do
-        expect(subject.instance_variable_get :@name).to eq :__api_token_auth__default__store__
+        expect(subject.instance_variable_get :@name).to eq :__default__store__
       end
       specify "allows passing a name for store" do
-        expect(described_class.new(name: :store).instance_variable_get(:@name)).to eq :__api_token_auth__store__store__
+        expect(described_class.new(name: :store).instance_variable_get(:@name)).to eq :__store__store__
       end
       specify "name is always a symbol" do
-        expect(described_class.new(name: "store").instance_variable_get(:@name)).to eq :__api_token_auth__store__store__
+        expect(described_class.new(name: "store").instance_variable_get(:@name)).to eq :__store__store__
       end
       context "#::applications storage default name is :app" do
-        specify { expect(subject.name).to eq :__api_token_auth__default__store__ }
+        specify { expect(subject.name).to eq :__default__store__ }
       end
-      context "store name is prefixed with __api_token_auth__ and suffixed with __store__" do
-        specify { expect(described_class.new(name: 'contacts_client').name).to eq :__api_token_auth__contacts_client__store__ }
+      context "store name is prefixed with __ and suffixed with __store__" do
+        specify { expect(described_class.new(name: 'contacts_client').name).to eq :__contacts_client__store__ }
       end
     end
     context "instance methods" do
       context "#name" do
         let(:store) { described_class.new name: 'store' }
         specify { expect(subject).to respond_to(:name).with(0).arguments }
-        specify { expect(subject.name).to eq(:__api_token_auth__default__store__)}
-        specify { expect(store.name).to eq(:__api_token_auth__store__store__)}
+        specify { expect(subject.name).to eq(:__default__store__)}
+        specify { expect(store.name).to eq(:__store__store__)}
       end
       context "#rename" do
         subject { described_class.new name: 'store' }
@@ -45,12 +45,12 @@ module ApplicationStore
           subject.set :boo, :boo
           expect(subject.get(:boo)).to eq :boo
           store = subject.store
-          expect(subject.name).to eq :__api_token_auth__store__store__
+          expect(subject.name).to eq :__store__store__
           subject.rename '__api_token_bitches__'
           expect(subject.name).to eq :__api_token_bitches__
           expect(subject.store).to eq store
           expect(subject.get(:boo)).to eq :boo
-          expect(subject.instance_variable_get(:@store).store.keys).not_to include :__api_token_auth__store__store__
+          expect(subject.instance_variable_get(:@store).store.keys).not_to include :__store__store__
         end
       end
       context "#get" do
@@ -92,14 +92,14 @@ module ApplicationStore
         let(:store) { subject.instance_variable_get :@store }
         specify { expect(subject).to respond_to(:clear).with(0).arguments }
         specify "forwards to store" do
-          expect(store).to receive(:set).with(:__api_token_auth__default__store__, instance_of(HashStore))
+          expect(store).to receive(:set).with(:__default__store__, instance_of(HashStore))
           subject.clear
         end
         specify "store is now empty" do
           subject.set :key, :value
-          expect(store.get :__api_token_auth__default__store__).not_to be_empty
+          expect(store.get :__default__store__).not_to be_empty
           subject.clear
-          expect(store.get :__api_token_auth__default__store__).to be_empty
+          expect(store.get :__default__store__).to be_empty
         end
       end
       context "#count" do
@@ -146,7 +146,7 @@ module ApplicationStore
         after { subject.clear }
         specify { expect(subject).to respond_to(:to_hash).with(0).arguments }
         specify "returns a raw native hash with arguments" do
-          expect(subject.to_hash).to eq({__api_token_auth__default__store__: {name: "name", enc: "encryption", person: { age: 34, name: "Frank"}}})
+          expect(subject.to_hash).to eq({__default__store__: {name: "name", enc: "encryption", person: { age: 34, name: "Frank"}}})
         end
       end
       context "#hashify_store" do
@@ -225,7 +225,7 @@ module ApplicationStore
       context "#store" do
         specify { expect(subject).to respond_to(:store).with(0).arguments }
         specify "returns store" do
-          expect(subject.store).to eq subject.instance_variable_get(:@store).get(:__api_token_auth__default__store__)
+          expect(subject.store).to eq subject.instance_variable_get(:@store).get(:__default__store__)
         end
       end
     end

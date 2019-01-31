@@ -32,7 +32,7 @@ Or install it yourself as:
 
 ```ruby
 applications = ApplicationStore.applications
-  => {:__api_token_auth__default__store__ => {}}
+  => {:__default__store__ => {}}
 
 some_client  = applications.create name: :some_client
   => #<ApplicationStore::Store:0x00007faf098b4678 @store=#<ApplicationStore::HashStore:0x00007faf098b4628 @store={:name=>:some_client}>>
@@ -48,7 +48,7 @@ some_client.to_hash
 
 applications.to_hash
 => {
-        :__api_token_auth__default__store__ => {
+        :__default__store__ => {
             :some_client => {
                 :name => :some_client,
                 :github_api_token => "pretty token"

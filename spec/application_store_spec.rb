@@ -14,10 +14,10 @@ RSpec.describe ApplicationStore do
         specify { expect { described_class.applications(name: 'contacts_client_token_store') }.not_to raise_error }
       end
       context "#::applications storage default name is :app" do
-        specify { expect(described_class.applications.name).to eq :__api_token_auth__default__store__ }
+        specify { expect(described_class.applications.name).to eq :__default__store__ }
       end
-      context "store name is prefixed with __api_token_auth__ and suffixed with __store__" do
-        specify { expect(described_class.applications(name: 'contacts_client').name).to eq :__api_token_auth__contacts_client__store__ }
+      context "store name is prefixed with __ and suffixed with __store__" do
+        specify { expect(described_class.applications(name: 'contacts_client').name).to eq :__contacts_client__store__ }
       end
     end
     context "can add and remove applications auth data" do
@@ -31,7 +31,7 @@ RSpec.describe ApplicationStore do
         subject.applications.add application2
         expect(subject.applications).not_to be_empty
         expect(subject.applications.count).to eq 3
-        expect(subject.applications.to_hash).to eq({__api_token_auth__default__store__: {application0: {name: :application0}, application1: {name: :application1}, application2: {name: :application2}}})
+        expect(subject.applications.to_hash).to eq({__default__store__: {application0: {name: :application0}, application1: {name: :application1}, application2: {name: :application2}}})
       end
       specify "removes applications" do
         expect(subject.applications).to be_empty
@@ -58,11 +58,11 @@ RSpec.describe ApplicationStore do
     context "#rename" do
       specify { expect(subject).to respond_to(:rename).with(1).argument }
       specify "renames store" do
-        expect(subject.applications.instance_variable_get(:@store).store.keys).to include(:__api_token_auth__default__store__)
-        expect(subject.applications.name).to eq :__api_token_auth__default__store__
+        expect(subject.applications.instance_variable_get(:@store).store.keys).to include(:__default__store__)
+        expect(subject.applications.name).to eq :__default__store__
         subject.rename 'new-store'
         expect(subject.applications.name).to eq 'new-store'.to_sym
-        expect(subject.applications.instance_variable_get(:@store).store.keys).not_to include(:__api_token_auth__default__store__)
+        expect(subject.applications.instance_variable_get(:@store).store.keys).not_to include(:__default__store__)
       end
     end
   end
