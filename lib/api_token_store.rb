@@ -8,3 +8,4 @@ end
 
 require_relative 'api_token_store/refinements/hash'
 require_relative 'api_token_store/store/general_store'
+require_relative 'api_token_store/store/hash_store'
