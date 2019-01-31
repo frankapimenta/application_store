@@ -1,8 +1,6 @@
 require "application_store/version"
 
 module ApplicationStore
-  class Error < StandardError; end
-  # Your code goes here...
 end
 
 
