@@ -1,7 +1,7 @@
 module ApplicationStore
   RSpec.describe Store do
     specify { expect(described_class.superclass).to be GeneralStore }
-    subject { described_class.new(name: 'app0', encryption: 'encryption', secret: 'secret') }
+    subject { described_class.new(name: 'app0') }
     context "extended modules" do
       specify { expect(described_class.singleton_class.included_modules).to include Forwardable }
     end
@@ -22,30 +22,14 @@ module ApplicationStore
         expect(described_class.new(fake_store).instance_variable_get(:@store)).to be_kind_of GeneralStore
       end
       specify "allows app data on initialization" do
-        expect { described_class.new(name: 'app0', encryption: 'encryption', secret: 'secret') }.not_to raise_error
+        expect { described_class.new(name: 'app0') }.not_to raise_error
       end
       specify "sets app data on init" do
         expect(subject.name).to eq :app0
-        expect(subject.encryption).to eq 'encryption'
-        expect(subject.secret).to eq 'secret'
       end
     end
     context "public instance methods" do
       let(:store) { subject.instance_variable_get(:@store) }
-      context "#valid? without encryption" do
-        # an application store instance if valid if name, encryption are given
-        specify { expect(Store.new).not_to be_valid }
-        specify { expect(Store.new(name: 'appxpto')).to be_valid }
-        specify { expect(Store.new(name: 'appxpto', encryption: 'something')).to be_valid }
-        specify { expect(subject).to be_valid }
-      end
-      context "#valid? with encryption" do
-        # an application store instance if valid if name, encryption are given
-        specify { expect(Store.new.valid?(encryption: true)).to be_falsey }
-        specify { expect(Store.new(name: 'appxpto').valid?(encryption: true)).to be_falsey }
-        specify { expect(Store.new(name: 'appxpto', encryption: 'something').valid?(encryption: true)).to be_falsey }
-        specify { expect(subject.valid?(encryption: true)).to be_truthy }
-      end
       context "#each" do
         specify { expect(subject).to respond_to(:each).with(0).argument }
       end
@@ -100,7 +84,7 @@ module ApplicationStore
         after { subject.clear }
         specify { expect(subject).to respond_to(:to_hash).with(0).arguments }
         specify "returns a raw native hash with arguments" do
-          expect(subject.to_hash).to eq({name: :app0, encryption: "encryption", secret: "secret" })
+          expect(subject.to_hash).to eq({name: :app0})
         end
       end
       context "attributes" do
@@ -116,22 +100,6 @@ module ApplicationStore
           specify "gets name from ivar @name" do
             subject.name= "name"
             expect(subject.name).to eq "name".to_sym
-          end
-        end
-        [:encryption, :secret].each do |attribute|
-          context "##{attribute}=" do
-            specify { expect(subject).to respond_to(:"#{attribute}=").with(1).argument }
-            specify "sets name for application store" do
-              subject.send "#{attribute}=", "#{attribute}"
-              expect(subject.get :"#{attribute}").to eq "#{attribute}"
-            end
-          end
-          context "##{attribute}" do
-            specify { expect(subject).to respond_to(:"#{attribute}").with(0).arguments }
-            specify "gets #{attribute} from ivar @#{attribute}" do
-              subject.set(:"#{attribute}", "#{attribute}")
-              expect(subject.send "#{attribute}").to eq "#{attribute}"
-            end
           end
         end
       end
