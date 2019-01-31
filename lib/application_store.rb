@@ -9,3 +9,4 @@ end
 require_relative 'application_store/refinements/hash'
 require_relative 'application_store/store/general_store'
 require_relative 'application_store/store/hash_store'
+require_relative 'application_store/store'
