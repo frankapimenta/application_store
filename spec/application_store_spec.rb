@@ -6,6 +6,10 @@ RSpec.describe ApplicationStore do
       specify { expect(described_class).to respond_to(:root_path).with(0).arguments }
       specify { expect(described_class::root_path).to eq File.expand_path(File.join(File.dirname(__FILE__), '../')) }
     end
+    context "::default_configuration_file_path" do
+      specify { expect(described_class).to respond_to(:default_configuration_file_path).with(0).arguments }
+      specify { expect(described_class::default_configuration_file_path).to eq File.join(ApplicationStore::root_path, "/lib/configuration.yml") }
+    end
     context "::applications" do
       let(:applications) { described_class.applications }
       specify { expect(described_class).to respond_to(:applications) }
