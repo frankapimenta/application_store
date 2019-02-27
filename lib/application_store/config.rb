@@ -14,7 +14,7 @@ module ApplicationStore
       end
 
       def default_configuration_file_path
-        File.join(ApplicationStore::root_path, 'lib/configuration.yml')
+        File.join(config_path, 'configuration.yml')
       end
     end
 
