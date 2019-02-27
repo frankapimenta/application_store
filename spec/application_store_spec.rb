@@ -2,9 +2,9 @@ RSpec.describe ApplicationStore do
   after { subject.instance_variable_set(:@applications, nil) }
   specify { expect(subject).to be_instance_of Module }
   context "module methods" do
-    context "::root" do
-      specify { expect(described_class).to respond_to(:root).with(0).arguments }
-      specify { expect(described_class::root).to eq File.expand_path(File.join(File.dirname(__FILE__), '../')) }
+    context "::root_path" do
+      specify { expect(described_class).to respond_to(:root_path).with(0).arguments }
+      specify { expect(described_class::root_path).to eq File.expand_path(File.join(File.dirname(__FILE__), '../')) }
     end
     context "::applications" do
       let(:applications) { described_class.applications }

@@ -1,7 +1,7 @@
 require "application_store/version"
 
 module ApplicationStore
-  def root
+  def root_path
     File.dirname __dir__
   end
 
@@ -16,7 +16,7 @@ module ApplicationStore
     applications.rename name
     applications
   end
-  module_function :root, :applications, :rename
+  module_function :root_path, :applications, :rename
 end
 
 require_relative 'application_store/store_composite'
