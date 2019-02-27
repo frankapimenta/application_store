@@ -12,7 +12,7 @@ module ApplicationStore
     class << self
       def environment
         begin
-          @environment || Rails.env
+          Rails.env
         rescue NameError
           _environment = ENV['APPLICATION_STORE_ENVIRONMENT']
           raise StandardError.new("environment not defined as expected") if _environment.nil?

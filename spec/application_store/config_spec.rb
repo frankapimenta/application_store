@@ -50,7 +50,6 @@ RSpec.describe ApplicationStore::Config do
   context "class methods" do
     context ".environment" do
       before do
-        described_class.instance_variable_set(:@environment, nil)
         allow(rails_constant).to receive(:env).and_raise NameError.new
         allow(ENV).to receive(:[]) # not defined by default
       end
@@ -58,10 +57,6 @@ RSpec.describe ApplicationStore::Config do
       specify { expect(described_class).to respond_to(:environment).with(0).arguments }
       specify "raises if env not defined" do
         expect { described_class.environment }.to raise_error StandardError, "environment not defined as expected"
-      end
-      specify "retrieve @environment if set before" do
-        described_class.instance_variable_set(:@environment, :development)
-        expect(described_class.environment).to eq described_class.instance_variable_get(:@environment)
       end
       specify "retrieve environment from Rails.env (is default)" do
         expect(rails_constant).to receive(:env).and_return 'development'
