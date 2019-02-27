@@ -9,6 +9,10 @@ module ApplicationStore
     end
 
     class << self
+      def config_path
+        File.join(ApplicationStore::root_path, 'lib/config')
+      end
+
       def default_configuration_file_path
         File.join(ApplicationStore::root_path, 'lib/configuration.yml')
       end

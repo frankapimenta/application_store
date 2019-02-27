@@ -23,6 +23,15 @@ RSpec.describe ApplicationStore::Config do
     end
   end
   context "class methods" do
+    context ".config_path" do
+      let(:config_path) { File.join(ApplicationStore::root_path, 'lib/config') }
+      specify { expect(described_class).to respond_to(:config_path).with(0).arguments }
+      specify "receives root_path" do
+        expect(ApplicationStore).to receive(:root_path).and_call_original
+        described_class.config_path
+      end
+      specify { expect(described_class.config_path).to eq config_path }
+    end
     context ".default_configuration_file_path" do
       specify { expect(described_class).to respond_to(:default_configuration_file_path).with(0).arguments }
       specify { expect(described_class::default_configuration_file_path).to eq File.join(ApplicationStore::root_path, "/lib/configuration.yml") }
