@@ -1,11 +1,11 @@
 module ApplicationStore
   class Config
 
-    def initialize environment: Config.environment,  configuration_file_path: Config.default_configuration_file_path
+    def initialize environment: Config.environment,  file_name:
       @environment = environment
-      self.class.instance_variable_set(:@configuration_file_path, configuration_file_path)
+      @file_name   = file_name
 
-      raise StandardError.new "configuration file does not exist or path given is wrong" unless File.exists?(self.class.configuration_file_path)
+      raise StandardError.new "configuration file does not exist or path given is wrong" unless File.exists?(File.join(Config.config_path, file_name))
       # TODO: load configuration yaml here
     end
 
@@ -19,16 +19,9 @@ module ApplicationStore
           _environment
         end.to_sym
       end
-      def configuration_file_path
-        @configuration_file_path || default_configuration_file_path
-      end
       # TODO ::configuration_file_path
       def config_path
         File.join(ApplicationStore::root_path, 'lib/config')
-      end
-
-      def default_configuration_file_path
-        File.join(config_path, 'configuration.yml')
       end
     end
 
