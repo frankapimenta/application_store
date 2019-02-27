@@ -10,6 +10,15 @@ module ApplicationStore
     end
 
     class << self
+      def environment
+        begin
+          @environment || Rails.env
+        rescue NameError
+          _environment = ENV['APPLICATION_STORE_ENVIRONMENT']
+          raise StandardError.new("environment not defined as expected") if _environment.nil?
+          _environment
+        end.to_sym
+      end
       def config_path
         File.join(ApplicationStore::root_path, 'lib/config')
       end
