@@ -27,4 +27,5 @@ module ApplicationStore
   module_function :applications, :rename
 end
 
+require_relative 'application_store/config'
 require_relative 'application_store/store_composite'
