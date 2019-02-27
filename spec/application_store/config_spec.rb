@@ -6,13 +6,11 @@ RSpec.describe ApplicationStore::Config do
     context "on setting @environment" do
       specify "sets environment from APP ENV when environment is not given" do
         expect(described_class).to receive(:environment).and_return :development
-        described_class.new
-        expect(described_class.instance_variable_get(:@environment)).to eq :development
+        expect(described_class.new.instance_variable_get(:@environment)).to eq :development
       end
       specify "sets given environment" do
-        described_class.new environment: :production
-        expect(described_class.instance_variable_get(:@environment)).to eq :production
-        expect(described_class.environment).to eq :production
+        instance = described_class.new environment: :production
+        expect(instance.instance_variable_get(:@environment)).to eq :production
       end
     end
     context "on setting @configuration_file_path" do

@@ -2,7 +2,7 @@ module ApplicationStore
   class Config
 
     def initialize environment: Config.environment,  configuration_file_path: Config.default_configuration_file_path
-      self.class.instance_variable_set(:@environment, environment)
+      @environment = environment
       self.class.instance_variable_set(:@configuration_file_path, configuration_file_path)
 
       raise StandardError.new "configuration file does not exist or path given is wrong" unless File.exists?(self.class.configuration_file_path)
