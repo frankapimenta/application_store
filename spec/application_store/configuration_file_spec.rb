@@ -29,6 +29,21 @@ RSpec.describe ConfigurationFile do
       specify { expect(subject).to respond_to(:file_name).with(0).arguments }
       specify { expect(subject.file_name).to eq file_name }
     end
+    context "#configuration_file_exists?" do
+      specify { expect(subject).to respond_to(:configuration_file_exists?).with(0).arguments }
+      context "expectations calls" do
+        specify "calls #configuration_file_path" do
+          expect(subject).to receive(:configuration_file_path).and_call_original
+          subject.configuration_file_exists?
+        end
+      end
+      specify "does not exist (configuration file)" do
+        subject.instance_variable_set(:@file_name, 'confiuration.yml')
+
+        expect(subject.configuration_file_exists?).to eq false
+      end
+      specify { expect(subject.configuration_file_exists?).to eq true }
+    end
     context "#configuration_file_path" do
       specify { expect(subject).to respond_to(:configuration_file_path).with(0).arguments }
       context "expectations calls" do
