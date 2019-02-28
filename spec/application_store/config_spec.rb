@@ -1,6 +1,4 @@
 RSpec.describe ApplicationStore::Config do
-  let(:configuration_file_path)         {  ApplicationStore::Config.default_configuration_file_path }
-  let(:full_path_to_configuration_file) { configuration_file_path }
   context "on initialization" do
     before { allow(ENV).to receive(:[]).with('APPLICATION_STORE_ENVIRONMENT').and_return 'development' }
     context "on setting @environment" do
