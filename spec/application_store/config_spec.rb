@@ -24,30 +24,49 @@ RSpec.describe ApplicationStore::Config do
       end
     end
     context "on raising error when configuration file does not exist" do
-      before do
-        allow(described_class).to receive(:config_path).and_return('config_path')
-        allow(File).to receive(:join).and_return 'configuration_file_path'
-        allow(File).to receive(:exists?).with('configuration_file_path').and_return true
-      end
-      specify "calls File.exists?" do
-        expect(File).to receive(:exists?).with('configuration_file_path').and_return true
-        described_class.new file_name: "configuration.yml"
-      end
-      specify "calls File.join" do
-        expect(File).to receive(:join).with('config_path', 'configuration.yml').and_return 'configuration_file_path'
-        described_class.new file_name: "configuration.yml"
-      end
-      specify "calls Config.config_path" do
-        expect(described_class).to receive(:config_path).and_return 'config_path'
-        described_class.new file_name: 'file_name'
+      specify "calls #configuration_file_exists?" do
+        expect_any_instance_of(described_class).to receive(:configuration_file_exists?).and_return true
+        described_class.new file_name: 'configuration.yml'
       end
       specify "raises error if given file path does not exist (bad path)" do
-        allow(File).to receive(:exists?).with('configuration_file_path').and_call_original
-        expect { described_class.new file_name: 'file_name_bad' }.to raise_error StandardError, "configuration file does not exist or path given is wrong"
+        expect { described_class.new file_name: 'confiuration.yml' }.to raise_error StandardError, "configuration file does not exist or path given is wrong"
       end
       specify "does not raise error if file exists" do
         expect { described_class.new(file_name: 'configuration.yml') }.not_to raise_error
       end
+    end
+  end
+  context "instance methods" do
+    subject { described_class.new environment: :development, file_name: 'configuration.yml' }
+    context "#configuration_file_exists?" do
+      specify { expect(subject).to respond_to(:configuration_file_exists?).with(0).arguments }
+      context "expectations calls" do
+        before do
+          allow(described_class).to receive(:config_path).and_return('config_path')
+          allow(File).to receive(:join).and_return 'configuration_file_path'
+          allow(File).to receive(:exists?).with('configuration_file_path').and_return true
+        end
+        specify "calls File.exists?" do
+          expect(File).to receive(:exists?).twice.with('configuration_file_path').and_return true
+          subject.configuration_file_exists?
+        end
+        specify "calls File.join" do
+          expect(File).to receive(:join).with('config_path', 'configuration.yml').and_return 'configuration_file_path'
+          subject.configuration_file_exists?
+        end
+        specify "calls Config.config_path" do
+          expect(described_class).to receive(:config_path).and_return 'config_path'
+          subject.configuration_file_exists?
+        end
+      end
+      specify "does not exist (configuration file)" do
+        _subject = described_class.new(environment: :development, file_name: 'configuration.yml')
+        # we have to manipulate the object in order to avoid raising error on instantiation due to file not existing
+        _subject.instance_variable_set(:@file_name, 'confiuration.yml')
+
+        expect(_subject.configuration_file_exists?).to eq false
+      end
+      specify { expect(subject.configuration_file_exists?).to eq true }
     end
   end
   context "class methods" do

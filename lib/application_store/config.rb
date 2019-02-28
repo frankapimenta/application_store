@@ -5,8 +5,12 @@ module ApplicationStore
       @environment = environment
       @file_name   = file_name
 
-      raise StandardError.new "configuration file does not exist or path given is wrong" unless File.exists?(File.join(Config.config_path, file_name))
+      raise StandardError.new "configuration file does not exist or path given is wrong" unless configuration_file_exists?
       # TODO: load configuration yaml here
+    end
+
+    def configuration_file_exists?
+      File.exists?(File.join(self.class.config_path, @file_name))
     end
 
     class << self
