@@ -39,21 +39,8 @@ RSpec.describe ApplicationStore::Config do
     context "#configuration_file_exists?" do
       specify { expect(subject).to respond_to(:configuration_file_exists?).with(0).arguments }
       context "expectations calls" do
-        before do
-          allow(described_class).to receive(:config_path).and_return('config_path')
-          allow(File).to receive(:join).and_return 'configuration_file_path'
-          allow(File).to receive(:exists?).with('configuration_file_path').and_return true
-        end
-        specify "calls File.exists?" do
-          expect(File).to receive(:exists?).twice.with('configuration_file_path').and_return true
-          subject.configuration_file_exists?
-        end
-        specify "calls File.join" do
-          expect(File).to receive(:join).with('config_path', 'configuration.yml').and_return 'configuration_file_path'
-          subject.configuration_file_exists?
-        end
-        specify "calls Config.config_path" do
-          expect(described_class).to receive(:config_path).and_return 'config_path'
+        specify "calls #configuration_file_path" do
+          expect(subject).to receive(:configuration_file_path).and_call_original
           subject.configuration_file_exists?
         end
       end

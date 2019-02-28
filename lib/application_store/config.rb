@@ -10,7 +10,7 @@ module ApplicationStore
     end
 
     def configuration_file_exists?
-      File.exists?(File.join(self.class.config_path, @file_name))
+      File.exists?(configuration_file_path)
     end
 
     def configuration_file_path
