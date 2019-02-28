@@ -66,6 +66,25 @@ RSpec.describe ApplicationStore::Config do
       end
       specify { expect(subject.configuration_file_exists?).to eq true }
     end
+    context "#configuration_file_path" do
+      subject { described_class.new environment: :development, file_name: 'configuration.yml' }
+      let(:config_path)             { File.join(ApplicationStore::root_path, 'lib/config') }
+      let(:file_name)               { subject.instance_variable_get(:@file_name) }
+      let(:configuration_file_path) { "#{config_path}/#{file_name}" }
+      specify { expect(subject).to respond_to(:configuration_file_path).with(0).arguments }
+      context "expectations calls" do
+        before { allow(described_class).to receive(:config_path).and_return(config_path) }
+        specify "calls File.join" do
+          expect(File).to receive(:join).with(config_path, 'configuration.yml').twice.and_call_original
+          subject.configuration_file_path
+        end
+        specify "calls Config.config_path" do
+          expect(described_class).to receive(:config_path).and_call_original
+          subject.configuration_file_path
+        end
+      end
+      specify { expect(subject.configuration_file_path).to eq(configuration_file_path) }
+    end
   end
   context "class methods" do
     context ".environment" do
