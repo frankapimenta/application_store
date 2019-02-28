@@ -5,7 +5,7 @@ class ConfigurationFile
     @location_path, @file_name = location_path, file_name
   end
 
-  def configuration_file_exists?
+  def exists?
     File.exists?(configuration_file_path)
   end
 
