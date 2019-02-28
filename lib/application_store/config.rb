@@ -4,6 +4,14 @@ module ApplicationStore
     def initialize environment: Config.environment,  file_name:
       @environment = environment
       @file_name   = file_name
+      # TODO: REFACTOR
+      # class extraction
+      #   => extract #configuration_file_* methods to ConfigurationFile
+      #   class ConfigurationFile
+      #     def initialize location:, file_name:
+      #       @location, @file_name = location, file_name
+      #     end
+      #   end
 
       raise StandardError.new "configuration file does not exist or path given is wrong" unless configuration_file_exists?
       # TODO: load configuration yaml here
