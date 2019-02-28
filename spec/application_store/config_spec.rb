@@ -13,7 +13,7 @@ RSpec.describe ApplicationStore::Config do
       end
     end
     specify "calls #configuration_file.exists?" do
-      expect_any_instance_of(ConfigurationFile).to receive(:exists?).and_call_original
+      expect_any_instance_of(ApplicationStore::ConfigurationFile).to receive(:exists?).and_call_original
       described_class.new file_name: 'configuration.yml'
     end
     context "on setting @environment" do
@@ -29,7 +29,7 @@ RSpec.describe ApplicationStore::Config do
     context "on setting @configuration_file" do
       specify "sets configuration_file instance when file_name is given is given" do
         instance = described_class.new file_name: 'configuration.yml'
-        expect(instance.instance_variable_get(:@configuration_file)).to be_instance_of(ConfigurationFile)
+        expect(instance.instance_variable_get(:@configuration_file)).to be_instance_of(ApplicationStore::ConfigurationFile)
       end
     end
   end
