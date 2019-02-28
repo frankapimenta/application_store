@@ -33,6 +33,14 @@ RSpec.describe ApplicationStore::Config do
       end
     end
   end
+  context "instance methods" do
+    context "#configuration_file" do
+      subject { described_class.new environment: :development, file_name: 'configuration.yml' }
+      specify { expect(subject).to respond_to(:configuration_file).with(0).arguments }
+      specify { expect(subject.configuration_file).to eq subject.instance_variable_get(:@configuration_file) }
+      specify { expect(subject.configuration_file).to be_instance_of ApplicationStore::ConfigurationFile }
+    end
+  end
   context "class methods" do
     context ".environment" do
       before do
