@@ -4,7 +4,7 @@ RSpec.describe ConfigurationFile do
   let(:config_class)            { ApplicationStore::Config }
   let(:location_path)           { config_class.config_path }
   let(:file_name)               { 'configuration.yml' }
-  let(:configuration_file_path) { "#{location_path}/#{file_name}" }
+  let(:file_path) { "#{location_path}/#{file_name}" }
 
   context "on initialization" do
     specify "holds location_path given in @location_path" do
@@ -32,8 +32,8 @@ RSpec.describe ConfigurationFile do
     context "#exists?" do
       specify { expect(subject).to respond_to(:exists?).with(0).arguments }
       context "expectations calls" do
-        specify "calls #configuration_file_path" do
-          expect(subject).to receive(:configuration_file_path).and_call_original
+        specify "calls #file_path" do
+          expect(subject).to receive(:file_path).and_call_original
           subject.exists?
         end
       end
@@ -44,15 +44,15 @@ RSpec.describe ConfigurationFile do
       end
       specify { expect(subject.exists?).to eq true }
     end
-    context "#configuration_file_path" do
-      specify { expect(subject).to respond_to(:configuration_file_path).with(0).arguments }
+    context "#file_path" do
+      specify { expect(subject).to respond_to(:file_path).with(0).arguments }
       context "expectations calls" do
         specify "calls File.join" do
           expect(File).to receive(:join).with(location_path, file_name).and_call_original
-          subject.configuration_file_path
+          subject.file_path
         end
       end
-      specify { expect(subject.configuration_file_path).to eq(configuration_file_path) }
+      specify { expect(subject.file_path).to eq(file_path) }
     end
   end
 end

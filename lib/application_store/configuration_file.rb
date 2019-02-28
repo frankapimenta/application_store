@@ -6,10 +6,10 @@ class ConfigurationFile
   end
 
   def exists?
-    File.exists?(configuration_file_path)
+    File.exists?(file_path)
   end
 
-  def configuration_file_path
+  def file_path
     File.join(@location_path, @file_name)
   end
 
