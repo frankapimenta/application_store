@@ -1,6 +1,10 @@
 RSpec.describe ApplicationStore::Config do
+  let(:path_to_config) { File.join(File.expand_path(File.dirname(__FILE__)), '../config') }
   context "on initialization" do
-    before { allow(ENV).to receive(:[]).with('APPLICATION_STORE_ENVIRONMENT').and_return 'development' }
+    before do
+      allow(described_class).to receive(:config_path).and_return path_to_config
+      allow(ENV).to receive(:[]).with('APPLICATION_STORE_ENVIRONMENT').and_return 'development'
+    end
     context "on raising error conditions" do
       specify "raises error when no file name given" do
         expect { described_class.new }.to raise_error ArgumentError, "missing keyword: file_name"
@@ -34,6 +38,7 @@ RSpec.describe ApplicationStore::Config do
     end
   end
   context "instance methods" do
+    before { allow(described_class).to receive(:config_path).and_return path_to_config }
     context "#configuration_file" do
       subject { described_class.new environment: :development, file_name: 'configuration.yml' }
       specify { expect(subject).to respond_to(:configuration_file).with(0).arguments }

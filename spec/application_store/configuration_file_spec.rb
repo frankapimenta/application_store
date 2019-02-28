@@ -43,7 +43,11 @@ module ApplicationStore
 
           expect(subject.exists?).to eq false
         end
-        specify { expect(subject.exists?).to eq true }
+        context "does exist (configuration file)" do
+          before { allow(subject).to receive(:file_path).and_return file_path }
+          let(:file_path) { File.join(File.expand_path(File.dirname(__FILE__)), '../config/configuration.yml') }
+          specify { expect(subject.exists?).to eq true }
+        end
       end
       context "#file_path" do
         specify { expect(subject).to respond_to(:file_path).with(0).arguments }
