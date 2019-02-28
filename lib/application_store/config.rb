@@ -21,7 +21,7 @@ module ApplicationStore
           _environment
         end.to_sym
       end
-      # TODO ::configuration_file_path
+
       def config_path
         File.join(ApplicationStore::root_path, 'lib/config')
       end
