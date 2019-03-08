@@ -10,7 +10,7 @@ module ApplicationStore
     end
     context "initialization" do
       specify "with default store" do
-        expect(subject.store).to eq ::RequestStore.store
+        expect(subject.store).to be ::RequestStore.store
       end
       specify "store is given via args" do
         store = {}
