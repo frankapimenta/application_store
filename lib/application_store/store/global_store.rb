@@ -6,7 +6,7 @@ module ApplicationStore
     using Refinements
     extend Forwardable
     include Enumerable
-    def_delegators :store, :empty?, :has_key?
+    def_delegators :store, :clear, :empty?, :has_key?
 
     def initialize store: ::RequestStore.store
       super store
@@ -22,10 +22,6 @@ module ApplicationStore
 
     def unset key
       store.delete key
-    end
-
-    def clear
-      store.clear
     end
 
     def traverse(&block)
