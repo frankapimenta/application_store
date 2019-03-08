@@ -8,6 +8,15 @@ module ApplicationStore
     context "included modules" do
       specify { expect(described_class.included_modules).to include Enumerable }
     end
+    context "initialization" do
+      specify "with default store" do
+        expect(subject.store).to eq ::RequestStore.store
+      end
+      specify "store is given via args" do
+        store = {}
+        expect(described_class.new(store: store).store).to eq store
+      end
+    end
     context "instance methods" do
       let(:store) { subject.instance_variable_get(:@store) }
       specify { expect(store).to be_a Hash }
