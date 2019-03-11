@@ -8,8 +8,8 @@ module ApplicationStore
     include Enumerable
     def_delegators :store, :clear, :empty?, :has_key?
 
-    def initialize store: ::RequestStore.store
-      super store
+    def initialize store= ::RequestStore.store
+      super
     end
 
     def get key

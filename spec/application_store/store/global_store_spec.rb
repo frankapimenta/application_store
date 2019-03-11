@@ -14,7 +14,7 @@ module ApplicationStore
       end
       specify "store is given via args" do
         store = {}
-        expect(described_class.new(store: store).store).to eq store
+        expect(described_class.new(store).store).to eq store
       end
     end
     context "instance methods" do
