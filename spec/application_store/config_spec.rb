@@ -6,15 +6,16 @@ RSpec.describe ApplicationStore::Config do
       allow(ENV).to receive(:[]).with('APPLICATION_STORE_ENVIRONMENT').and_return 'development'
     end
     context "on raising error conditions" do
-      specify "raises error when no file name given" do
-        expect { described_class.new }.to raise_error ArgumentError, "missing keyword: file_name"
-      end
       specify "raises error if given file path does not exist (bad path)" do
         expect { described_class.new file_name: 'confiuration.yml' }.to raise_error StandardError, "configuration file does not exist or path given is wrong"
       end
       specify "does not raise error if file exists" do
         expect { described_class.new(file_name: 'application_store.yml') }.not_to raise_error
       end
+      specify "does not raise error for default file name if exists" do
+        expect { subject }.not_to raise_error
+      end
+      specify { expect(subject.instance_variable_get(:@configuration_file).file_name).to eq 'application_store.yml' }
     end
     specify "calls #configuration_file.exists?" do
       expect_any_instance_of(ApplicationStore::ConfigurationFile).to receive(:exists?).and_call_original

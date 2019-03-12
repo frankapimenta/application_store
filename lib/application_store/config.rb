@@ -5,7 +5,7 @@ module ApplicationStore
 
     attr_reader :configuration_file
 
-    def initialize environment: Config.environment,  file_name:
+    def initialize environment: Config.environment,  file_name: 'application_store.yml'
       @environment        = environment
       @configuration_file = ConfigurationFile.new file_name: file_name
 
