@@ -68,6 +68,9 @@ RSpec.describe ApplicationStore do
         expect(subject.applications.name).to eq 'new-store'.to_sym
         expect(subject.applications.instance_variable_get(:@store).store.keys).not_to include(:__default__store__)
       end
+      specify "returns application renamed with outer scope" do
+        expect(subject.rename('another-new-store')).to eq({"another-new-store" => subject.applications.store})
+      end
     end
   end
 end

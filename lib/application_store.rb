@@ -16,7 +16,7 @@ module ApplicationStore
 
   def rename name
     applications.rename name
-    applications
+    { "#{name}" => applications.store }
   end
 
   module_function :root_path, :applications, :rename
