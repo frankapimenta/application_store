@@ -4,7 +4,7 @@ module ApplicationStore
 
     let(:config_class)            { ApplicationStore::Config }
     let(:location_path)           { config_class.config_path }
-    let(:file_name)               { 'configuration.yml' }
+    let(:file_name)               { 'application_store.yml' }
     let(:file_path) { "#{location_path}/#{file_name}" }
 
     context "on initialization" do
@@ -45,7 +45,7 @@ module ApplicationStore
         end
         context "does exist (configuration file)" do
           before { allow(subject).to receive(:file_path).and_return file_path }
-          let(:file_path) { File.join(File.expand_path(File.dirname(__FILE__)), '../config/configuration.yml') }
+          let(:file_path) { File.join(File.expand_path(File.dirname(__FILE__)), '../config/application_store.yml') }
           specify { expect(subject.exists?).to eq true }
         end
       end

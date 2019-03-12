@@ -13,26 +13,26 @@ RSpec.describe ApplicationStore::Config do
         expect { described_class.new file_name: 'confiuration.yml' }.to raise_error StandardError, "configuration file does not exist or path given is wrong"
       end
       specify "does not raise error if file exists" do
-        expect { described_class.new(file_name: 'configuration.yml') }.not_to raise_error
+        expect { described_class.new(file_name: 'application_store.yml') }.not_to raise_error
       end
     end
     specify "calls #configuration_file.exists?" do
       expect_any_instance_of(ApplicationStore::ConfigurationFile).to receive(:exists?).and_call_original
-      described_class.new file_name: 'configuration.yml'
+      described_class.new file_name: 'application_store.yml'
     end
     context "on setting @environment" do
       specify "sets environment from APP ENV when environment is not given" do
         expect(described_class).to receive(:environment).and_call_original
-        expect(described_class.new(file_name: 'configuration.yml').instance_variable_get(:@environment)).to eq :development
+        expect(described_class.new(file_name: 'application_store.yml').instance_variable_get(:@environment)).to eq :development
       end
       specify "sets given environment" do
-        instance = described_class.new environment: :production, file_name: 'configuration.yml'
+        instance = described_class.new environment: :production, file_name: 'application_store.yml'
         expect(instance.instance_variable_get(:@environment)).to eq :production
       end
     end
     context "on setting @configuration_file" do
       specify "sets configuration_file instance when file_name is given is given" do
-        instance = described_class.new file_name: 'configuration.yml'
+        instance = described_class.new file_name: 'application_store.yml'
         expect(instance.instance_variable_get(:@configuration_file)).to be_instance_of(ApplicationStore::ConfigurationFile)
       end
     end
@@ -40,7 +40,7 @@ RSpec.describe ApplicationStore::Config do
   context "instance methods" do
     before { allow(described_class).to receive(:config_path).and_return path_to_config }
     context "#configuration_file" do
-      subject { described_class.new environment: :development, file_name: 'configuration.yml' }
+      subject { described_class.new environment: :development, file_name: 'application_store.yml' }
       specify { expect(subject).to respond_to(:configuration_file).with(0).arguments }
       specify { expect(subject.configuration_file).to eq subject.instance_variable_get(:@configuration_file) }
       specify { expect(subject.configuration_file).to be_instance_of ApplicationStore::ConfigurationFile }
