@@ -7,6 +7,9 @@ module ApplicationStore
     let(:file_name)               { 'application_store.yml' }
     let(:file_path) { "#{location_path}/#{file_name}" }
 
+    context "CONSTANTS" do
+      specify { expect(described_class::ALLOWED_EXTENSIONS).to eq [:yaml, :yml] }
+    end
     context "on initialization" do
       specify "holds location_path given in @location_path" do
         expect(subject.instance_variable_get(:@location_path)).to eq location_path

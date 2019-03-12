@@ -1,5 +1,6 @@
 module ApplicationStore
   class ConfigurationFile
+    ALLOWED_EXTENSIONS = [:yaml, :yml]
     attr_reader :location_path, :file_name
 
     def initialize(location_path: ApplicationStore::Config.config_path, file_name: )
