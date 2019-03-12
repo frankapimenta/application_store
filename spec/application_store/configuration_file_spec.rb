@@ -33,6 +33,10 @@ module ApplicationStore
         specify { expect(subject).to respond_to(:file_name).with(0).arguments }
         specify { expect(subject.file_name).to eq file_name }
       end
+      context "#file_type" do
+        specify { expect(subject).to respond_to(:file_type).with(0).arguments }
+        specify { expect(subject.file_type).to eq :yml }
+      end
       context "#exists?" do
         specify { expect(subject).to respond_to(:exists?).with(0).arguments }
         context "expectations calls" do

@@ -14,5 +14,10 @@ module ApplicationStore
     def file_path
       File.join(@location_path, @file_name)
     end
+
+    def file_type
+      File.extname(file_path)[1..-1].to_sym
+    end
+
   end
 end
