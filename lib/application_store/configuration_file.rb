@@ -5,6 +5,8 @@ module ApplicationStore
 
     def initialize(location_path: ApplicationStore::Config.config_path, file_name: )
       @location_path, @file_name = location_path, file_name
+
+      raise StandardError, "configuration file must be a yaml file" unless is_yml?
     end
 
     def exists?
@@ -17,6 +19,10 @@ module ApplicationStore
 
     def file_type
       File.extname(file_path)[1..-1].to_sym
+    end
+
+    private def is_yml?
+      ALLOWED_EXTENSIONS.include? file_type
     end
 
   end

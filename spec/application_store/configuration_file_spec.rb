@@ -11,6 +11,9 @@ module ApplicationStore
       specify { expect(described_class::ALLOWED_EXTENSIONS).to eq [:yaml, :yml] }
     end
     context "on initialization" do
+      specify "raises error if file is not an yaml file" do
+        expect { described_class.new(file_name: 'application_store.txt') }.to raise_error StandardError, 'configuration file must be a yaml file'
+      end
       specify "holds location_path given in @location_path" do
         expect(subject.instance_variable_get(:@location_path)).to eq location_path
       end
