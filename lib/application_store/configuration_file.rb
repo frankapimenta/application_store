@@ -24,6 +24,10 @@ module ApplicationStore
       File.extname(file_path)[1..-1].to_sym
     end
 
+    def file_extension
+      File.extname file_path
+    end
+
     def content
       @content ||= load_file.with_indifferent_access
     end
