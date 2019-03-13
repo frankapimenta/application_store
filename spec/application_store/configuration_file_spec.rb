@@ -48,6 +48,15 @@ module ApplicationStore
         end
         specify { expect(subject.file_type).to eq :yml }
       end
+      context "#file_basename" do
+        specify { expect(subject).to respond_to(:file_basename).with(0).arguments }
+        specify "calls File.basename" do
+          expect(subject).to receive(:file_extension).and_call_original
+          expect(File).to receive(:basename).with(subject.file_name, '.yml')
+          subject.file_basename
+        end
+        specify { expect(subject.file_basename).to eq file_name.split('.').first }
+      end
       context "#content" do
         before { allow(subject).to receive(:file_path).and_return file_path }
         let(:file_path) { File.join(File.expand_path(File.dirname(__FILE__)), '../config/application_store.yml') }
