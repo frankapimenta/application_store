@@ -3,7 +3,7 @@ require_relative "configuration_file"
 module ApplicationStore
   class Config
 
-    attr_reader :configuration_file
+    attr_reader :environment, :configuration_file
 
     def initialize environment: Config.environment,  file_name: 'application_store.yml'
       @environment        = environment

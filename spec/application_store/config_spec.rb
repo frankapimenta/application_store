@@ -40,6 +40,11 @@ RSpec.describe ApplicationStore::Config do
   end
   context "instance methods" do
     before { allow(described_class).to receive(:config_path).and_return path_to_config }
+    context "#environment" do
+      subject { described_class.new environment: :development, file_name: configuration_file_name }
+      specify { expect(subject).to respond_to(:environment).with(0).arguments }
+      specify { expect(subject.environment).to eq :development}
+    end
     context "#configuration_file" do
       subject { described_class.new environment: :development, file_name: configuration_file_name }
       specify { expect(subject).to respond_to(:configuration_file).with(0).arguments }
