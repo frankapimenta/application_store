@@ -54,7 +54,9 @@ module ApplicationStore
           expect(subject.content).to be result
         end
         specify { expect(subject.content).to be_instance_of ActiveSupport::HashWithIndifferentAccess }
-        specify { expect(subject.content.keys).to include("application_store") }
+        specify "is chainable callable" do
+          expect(subject.content.application_store.finance_manager).to be_instance_of ActiveSupport::HashWithIndifferentAccess
+        end
       end
       context "#exists?" do
         specify { expect(subject).to respond_to(:exists?).with(0).arguments }
