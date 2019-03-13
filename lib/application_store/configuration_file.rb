@@ -1,3 +1,4 @@
+require 'active_support/core_ext/hash'
 require 'yaml'
 
 module ApplicationStore
@@ -24,7 +25,7 @@ module ApplicationStore
     end
 
     def content
-      @content ||= load_file
+      @content ||= load_file.with_indifferent_access
     end
 
     private def is_yml?

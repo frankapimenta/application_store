@@ -45,7 +45,7 @@ module ApplicationStore
         let(:file_path) { File.join(File.expand_path(File.dirname(__FILE__)), '../config/application_store.yml') }
         specify { expect(subject).to respond_to(:content).with(0).arguments }
         specify "calls -load_file" do
-          expect(subject).to receive(:load_file)
+          expect(subject).to receive_message_chain(:load_file, :with_indifferent_access)
           subject.content
         end
         specify "memoizes loaded content from file" do
@@ -53,7 +53,7 @@ module ApplicationStore
           result = subject.content
           expect(subject.content).to be result
         end
-        specify { expect(subject.content).to be_instance_of Hash }
+        specify { expect(subject.content).to be_instance_of ActiveSupport::HashWithIndifferentAccess }
         specify { expect(subject.content.keys).to include("application_store") }
       end
       context "#exists?" do
