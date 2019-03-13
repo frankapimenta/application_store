@@ -40,7 +40,7 @@ module ApplicationStore
       add Store.new name: name
     end
 
-    def clear
+    def clear# TODO clear store first
       @store.set @name, HashStore.new
     end
 
