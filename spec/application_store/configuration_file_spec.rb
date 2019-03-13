@@ -63,7 +63,8 @@ module ApplicationStore
         specify { expect(subject).to respond_to(:file_path).with(0).arguments }
         context "expectations calls" do
           specify "calls File.join" do
-            expect(File).to receive(:join).with(location_path, file_name).and_call_original
+            # rspec makes an extra call due to location_path call in the top
+            expect(File).to receive(:join).twice.with(location_path, file_name).and_call_original
             subject.file_path
           end
         end
