@@ -1,3 +1,4 @@
+# TODO: check #count on #applications for empty store
 require "application_store/version"
 
 module ApplicationStore
