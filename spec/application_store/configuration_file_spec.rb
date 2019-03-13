@@ -72,7 +72,7 @@ module ApplicationStore
         end
         specify { expect(subject.content).to be_instance_of ActiveSupport::HashWithIndifferentAccess }
         specify "is chainable callable" do
-          expect(subject.content.application_store.finance_manager).to be_instance_of ActiveSupport::HashWithIndifferentAccess
+          expect(subject.content.application_store.development.finance_manager).to be_instance_of ActiveSupport::HashWithIndifferentAccess
         end
       end
       context "#exists?" do

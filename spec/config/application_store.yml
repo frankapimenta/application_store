@@ -1,12 +1,25 @@
 application_store:
-  finance_manager:
-    configuration:
-      email:
-        smtp:
-          host: 'smtp.x.ch'
-        pop3:
-          host: 'pop3.x.ch'
-    contacts_client:
-      host: 'localhost'
-      port: 3002
-      api_key: 'asdasdasdasd'
+  development:
+    finance_manager:
+      configurations:
+        email:
+          smtp:
+            host: 'development.smtp.x.ch'
+          pop3:
+            host: 'development.pop3.x.ch'
+      contacts_client:
+        host: 'development.localhost'
+        port: 3001
+        api_key: 'development.asdasdasdasd'
+  staging:
+    finance_manager:
+      configurations:
+        email:
+          smtp:
+            host: 'staging.smtp.x.ch'
+          pop3:
+            host: 'staging.pop3.x.ch'
+      contacts_client:
+        host: 'staging.localhost'
+        port: 3002
+        api_key: 'staging.asdasdasdasd'
