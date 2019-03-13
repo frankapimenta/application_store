@@ -104,6 +104,20 @@ module ApplicationStore
           expect(store.get :__default__store__).to be_empty
         end
       end
+      context "#destroy!" do
+        let(:store) { subject.instance_variable_get(:@store) }
+        specify { expect(subject).to respond_to(:destroy!).with(0).arguments }
+        specify "forwards to store call to #clear" do
+          expect(store).to receive(:clear)
+          subject.destroy!
+        end
+        specify "empties Global Store" do
+          subject.add ApplicationStore::Store.new name: 'to-delete-store'
+          expect(store).not_to be_empty
+          subject.destroy!
+          expect(store).to be_empty
+        end
+      end
       context "#count" do
         let(:application0) { Store.new name: 'application0' }
         let(:application1) { Store.new name: 'application1' }

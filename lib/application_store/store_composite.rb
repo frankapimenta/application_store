@@ -44,6 +44,10 @@ module ApplicationStore
       @store.set @name, HashStore.new
     end
 
+    def destroy!
+      @store.clear
+    end
+
     def hashify_store
       store.traverse { |k,v| [k,v] }
     end
