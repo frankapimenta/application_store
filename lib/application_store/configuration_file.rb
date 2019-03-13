@@ -20,12 +20,12 @@ module ApplicationStore
       File.join(@location_path, @file_name)
     end
 
-    def file_type
-      File.extname(file_path)[1..-1].to_sym
-    end
-
     def file_extension
       File.extname file_path
+    end
+
+    def file_type
+      file_extension[1..-1].to_sym
     end
 
     def content

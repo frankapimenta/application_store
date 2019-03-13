@@ -36,13 +36,17 @@ module ApplicationStore
         specify { expect(subject).to respond_to(:file_name).with(0).arguments }
         specify { expect(subject.file_name).to eq file_name }
       end
-      context "#file_type" do
-        specify { expect(subject).to respond_to(:file_type).with(0).arguments }
-        specify { expect(subject.file_type).to eq :yml }
-      end
       context "#file_extension" do
         specify { expect(subject).to respond_to(:file_extension).with(0).arguments }
         specify { expect(subject.file_extension).to eq '.yml' }
+      end
+      context "#file_type" do
+        specify { expect(subject).to respond_to(:file_type).with(0).arguments }
+        specify "calls #file_extension" do
+          expect(subject).to receive(:file_extension).and_call_original
+          subject.file_type
+        end
+        specify { expect(subject.file_type).to eq :yml }
       end
       context "#content" do
         before { allow(subject).to receive(:file_path).and_return file_path }
