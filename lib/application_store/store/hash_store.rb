@@ -4,7 +4,7 @@ require_relative 'general_store'
 
 module ApplicationStore
   class HashStore < GeneralStore
-    using ApplicationStore::Refinements
+    using Refinements
     extend Forwardable
     include Enumerable
     def_delegators :store, :clear, :empty?, :has_key?, :to_hash
