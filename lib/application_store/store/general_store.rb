@@ -1,4 +1,3 @@
-# TODO: solve issue with #set and #get for non symbol keys
 module ApplicationStore
   class GeneralStore
     attr_reader :store

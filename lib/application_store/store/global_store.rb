@@ -13,15 +13,15 @@ module ApplicationStore
     end
 
     def get key
-      store.fetch key, nil
+      store.fetch key.to_sym, nil
     end
 
     def set key, value
-      store[key] = value
+      store[key.to_sym] = value
     end
 
     def unset key
-      store.delete key
+      store.delete key.to_sym
     end
 
     def traverse(&block)

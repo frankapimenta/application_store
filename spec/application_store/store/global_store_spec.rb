@@ -1,6 +1,7 @@
 module ApplicationStore
   RSpec.describe GlobalStore do
     it_behaves_like "a hash store"
+    it_behaves_like "a getter and setter with indifferent keys"
 
     specify { expect(described_class.superclass).to eq GeneralStore }
     specify { expect{ described_class.new }.not_to raise_error }
@@ -24,42 +25,6 @@ module ApplicationStore
       specify { expect(store).to be_a Hash }
       context "#each" do
         specify { expect(subject).to respond_to(:each).with(0).argument }
-      end
-      context "#get" do
-        before do
-          subject.set :key, :value
-          expect(store).to have_key :key
-        end
-        after do
-          subject.unset :key
-          expect(store).not_to have_key :key
-        end
-        specify { expect(subject).to respond_to(:get).with(1).argument }
-        specify "gets value for given key" do
-          expect(subject.get :key).to eq :value
-        end
-        specify "does not raise error for no existing key" do
-          expect { subject.get :no_existing_key }.not_to raise_error
-        end
-        specify "returns nil for inexistence key" do
-          expect(subject.get :no_existing_key).to be nil
-        end
-      end
-      context "#set" do
-        specify { expect(subject).to respond_to(:set).with(2).argument }
-        specify "has key and value after set" do
-          subject.set :key, :value
-          expect(store[:key]).to eq :value
-        end
-      end
-      context "#unset" do
-        specify { expect(subject).to respond_to(:unset).with(1).argument }
-        specify "unsets key (removes key and value from repo)" do
-          subject.set :key, :value
-          expect(store).to have_key :key
-          subject.unset :key
-          expect(store).not_to have_key :key
-        end
       end
       context "#clear" do
         before do
