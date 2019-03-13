@@ -10,7 +10,10 @@ module ApplicationStore
       @configuration_file = ConfigurationFile.new file_name: file_name
 
       raise StandardError.new "configuration file does not exist or path given is wrong" unless @configuration_file.exists?
-      # TODO: load configuration yaml here
+    end
+
+    def configurations
+      configuration_file.content
     end
 
     class << self

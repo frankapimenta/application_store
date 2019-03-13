@@ -46,6 +46,16 @@ RSpec.describe ApplicationStore::Config do
       specify { expect(subject.configuration_file).to eq subject.instance_variable_get(:@configuration_file) }
       specify { expect(subject.configuration_file).to be_instance_of ApplicationStore::ConfigurationFile }
     end
+    context "#configurations" do
+      before { allow(described_class).to receive(:config_path).and_return path_to_config }
+      subject { described_class.new environment: :development, file_name: configuration_file_name }
+      specify { expect(subject).to respond_to(:configurations).with(0).arguments }
+      specify "calls #content in configuration_file" do
+        expect(subject).to receive_message_chain(:configuration_file, :content)
+        subject.configurations
+      end
+      specify { expect(subject.configurations).to be_instance_of ActiveSupport::HashWithIndifferentAccess }
+    end
   end
   context "class methods" do
     context ".environment" do
