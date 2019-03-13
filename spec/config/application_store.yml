@@ -1,0 +1,12 @@
+application_store:
+  finance_manager:
+    configuration:
+      email:
+        smtp:
+          host: 'smtp.x.ch'
+        pop3:
+          host: 'pop3.x.ch'
+    contacts_client:
+      host: 'localhost'
+      port: 3002
+      api_key: 'asdasdasdasd'

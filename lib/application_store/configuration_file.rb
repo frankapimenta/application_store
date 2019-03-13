@@ -1,3 +1,5 @@
+require 'yaml'
+
 module ApplicationStore
   class ConfigurationFile
     ALLOWED_EXTENSIONS = [:yaml, :yml]
@@ -21,8 +23,16 @@ module ApplicationStore
       File.extname(file_path)[1..-1].to_sym
     end
 
+    def content
+      @content ||= load_file
+    end
+
     private def is_yml?
       ALLOWED_EXTENSIONS.include? file_type
+    end
+
+    private def load_file
+      YAML::load_file file_path
     end
 
   end

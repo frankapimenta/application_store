@@ -40,6 +40,22 @@ module ApplicationStore
         specify { expect(subject).to respond_to(:file_type).with(0).arguments }
         specify { expect(subject.file_type).to eq :yml }
       end
+      context "#content" do
+        before { allow(subject).to receive(:file_path).and_return file_path }
+        let(:file_path) { File.join(File.expand_path(File.dirname(__FILE__)), '../config/application_store.yml') }
+        specify { expect(subject).to respond_to(:content).with(0).arguments }
+        specify "calls -load_file" do
+          expect(subject).to receive(:load_file)
+          subject.content
+        end
+        specify "memoizes loaded content from file" do
+          expect(subject).to receive(:load_file).once.and_call_original
+          result = subject.content
+          expect(subject.content).to be result
+        end
+        specify { expect(subject.content).to be_instance_of Hash }
+        specify { expect(subject.content.keys).to include("application_store") }
+      end
       context "#exists?" do
         specify { expect(subject).to respond_to(:exists?).with(0).arguments }
         context "expectations calls" do
