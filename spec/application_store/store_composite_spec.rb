@@ -1,5 +1,7 @@
 module ApplicationStore
   RSpec.describe StoreComposite do
+    it_behaves_like "a hash store"
+
     let(:store) { subject.store }
     specify { expect(described_class.superclass).to eq GeneralStore }
     context "included modules" do
