@@ -13,6 +13,21 @@ module ApplicationStore
       after do
         subject.instance_variable_set(:@store, Hash.new)
       end
+      context "on method missing" do
+        specify "calls #is_writer?" do
+          expect(subject).to receive(:is_writter?).with(:finance_manager)
+          subject.finance_manager
+        end
+        specify "on method missing (reading) forward to #get" do
+          expect(subject).to receive(:get).with(:finance_manager)
+          subject.finance_manager
+        end
+        specify "on method missing (writing) forward to #get" do
+          hash = {}
+          expect(subject).to receive(:set).with(:finance_manager, hash)
+          subject.finance_manager=hash
+        end
+      end
       context "#each" do
         specify { expect(subject).to respond_to(:each).with(0).argument }
       end
