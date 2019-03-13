@@ -40,24 +40,18 @@ RSpec.describe ApplicationStore::Config do
   end
   context "instance methods" do
     before { allow(described_class).to receive(:config_path).and_return path_to_config }
+    subject { described_class.new environment: :development, file_name: configuration_file_name }
     context "#environment" do
-      subject { described_class.new environment: :development, file_name: configuration_file_name }
       specify { expect(subject).to respond_to(:environment).with(0).arguments }
       specify { expect(subject.environment).to eq :development}
     end
     context "#configuration_file" do
-      subject { described_class.new environment: :development, file_name: configuration_file_name }
       specify { expect(subject).to respond_to(:configuration_file).with(0).arguments }
       specify { expect(subject.configuration_file).to eq subject.instance_variable_get(:@configuration_file) }
       specify { expect(subject.configuration_file).to be_instance_of ApplicationStore::ConfigurationFile }
     end
     context "#configurations" do
-      before do
-        allow(described_class).to receive(:config_path).and_return path_to_config
-        allow(ApplicationStore::Config).to receive(:environment).and_return :development
-      end
       let(:content) { double :content }
-      subject { described_class.new environment: :development, file_name: configuration_file_name }
       specify { expect(subject).to respond_to(:configurations).with_keywords(:for_env) }
       specify "calls #content in configuration_file" do
         expect(subject).to receive(:configuration_file).twice.and_return content
@@ -67,14 +61,14 @@ RSpec.describe ApplicationStore::Config do
         expect(content).to receive(:[]).with(:development).and_return content
         subject.configurations
       end
-      specify "returns configurations for current env" do
-        expect(subject.configurations).to be subject.configuration_file.content.application_store.development
+      context "returns configurations for current env" do
+        specify { expect(subject.configurations).to be_instance_of ActiveSupport::HashWithIndifferentAccess }
+        specify { expect(subject.configurations).to be subject.configuration_file.content.application_store.development }
       end
-      specify { expect(subject.configurations).to be_instance_of ActiveSupport::HashWithIndifferentAccess }
-      context "for development" do
-        specify { expect(subject.configurations.finance_manager.configurations.email.smtp.host).to eq 'development.smtp.x.ch' }
+      context "for given env :development" do
+        specify { expect(subject.configurations(for_env: :development).finance_manager.configurations.email.smtp.host).to eq 'development.smtp.x.ch' }
       end
-      context "for staging" do
+      context "for given env :staging" do
         specify { expect(subject.configurations(for_env: :staging).finance_manager.configurations.email.smtp.host).to eq 'staging.smtp.x.ch' }
       end
     end
