@@ -24,7 +24,7 @@ module ApplicationStore
   end
 
   def configurations environment: Config.environment
-    configurations = config(environment: environment).configurations(for_env: environment)
+    configurations = config(environment: environment).configurations(environment: environment)
 
     yield configurations if block_given?
 

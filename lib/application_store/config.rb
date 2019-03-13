@@ -12,8 +12,8 @@ module ApplicationStore
       raise StandardError.new "configuration file does not exist or path given is wrong" unless @configuration_file.exists?
     end
 
-    def configurations for_env: self.environment
-      configuration_file.content[configuration_file.file_basename][for_env]
+    def configurations environment: self.environment
+      configuration_file.content[configuration_file.file_basename][environment]
     end
 
     class << self

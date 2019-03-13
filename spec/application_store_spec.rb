@@ -106,7 +106,7 @@ RSpec.describe ApplicationStore do
       end
       specify "expects to call ::config with given env" do
         expect(described_class).to receive(:config).with(environment: :staging).and_return config
-        expect(config).to receive(:configurations).with(for_env: :staging)
+        expect(config).to receive(:configurations).with(environment: :staging)
         described_class.configurations(environment: :staging)
       end
       specify "yiels if block given" do
