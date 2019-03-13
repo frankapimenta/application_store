@@ -90,5 +90,35 @@ RSpec.describe ApplicationStore do
         expect(described_class.config).to be described_class.config
       end
     end
+    context "#configurations" do
+      before { allow(ApplicationStore::Config).to receive(:environment).and_return environment }
+      let(:environment)    { :development }
+      let(:config)         { double :config }
+      specify { expect(described_class).to respond_to(:configurations).with_keywords(:environment) }
+      specify "calls ::config" do
+        expect(described_class).to receive_message_chain(:config, :configurations)
+        described_class.configurations
+      end
+      specify { expect(described_class.configurations).to be_instance_of ActiveSupport::HashWithIndifferentAccess }
+      specify "expects to call ::config with no env given" do
+        expect(described_class).to receive_message_chain(:config, :configurations).and_return config
+        described_class.configurations
+      end
+      specify "expects to call ::config with given env" do
+        expect(described_class).to receive(:config).with(environment: :staging).and_return config
+        expect(config).to receive(:configurations).with(for_env: :staging)
+        described_class.configurations(environment: :staging)
+      end
+      specify "yiels if block given" do
+        expect { |b| described_class.configurations(&b) }.to yield_control
+        described_class.configurations
+      end
+      specify "returns configurations for current env" do
+        expect(described_class.configurations.finance_manager.configurations.email.smtp.host).to match(/development/)
+      end
+      specify "returns configurations for staging env" do
+        expect(described_class.configurations(environment: :staging).finance_manager.configurations.email.smtp.host).to match(/staging/)
+      end
+    end
   end
 end

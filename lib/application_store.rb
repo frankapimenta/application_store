@@ -23,7 +23,15 @@ module ApplicationStore
     @config ||= Config.new environment: environment, file_name: file_name
   end
 
-  module_function :root_path, :applications, :rename, :config
+  def configurations environment: Config.environment
+    configurations = config(environment: environment).configurations(for_env: environment)
+
+    yield configurations if block_given?
+
+    configurations
+  end
+
+  module_function :root_path, :applications, :rename, :config, :configurations
 end
 
 require_relative 'application_store/config'
