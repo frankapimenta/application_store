@@ -1,5 +1,7 @@
 module ApplicationStore
   RSpec.describe GlobalStore do
+    it_behaves_like "a hash store"
+
     specify { expect(described_class.superclass).to eq GeneralStore }
     specify { expect{ described_class.new }.not_to raise_error }
     context "extended modules" do

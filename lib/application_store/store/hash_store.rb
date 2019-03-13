@@ -14,10 +14,6 @@ module ApplicationStore
       super
     end
 
-    def method_missing method, *args, &block
-      is_writter?(method) ? set(method[0...-1].to_sym, args.pop) : get(method.to_sym)
-    end
-
     def get key
       store.fetch key, nil
     end
@@ -32,10 +28,6 @@ module ApplicationStore
 
     def traverse(&block)
       store.traverse(&block)
-    end
-
-    private def is_writter? method_name
-      method_name.to_s.chars.last == "="
     end
 
   end

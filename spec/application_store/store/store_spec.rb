@@ -1,5 +1,7 @@
 module ApplicationStore
   RSpec.describe Store do
+    it_behaves_like "a hash store"
+
     specify { expect(described_class.superclass).to be GeneralStore }
     subject { described_class.new(name: 'app0') }
     context "extended modules" do
