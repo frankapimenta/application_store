@@ -3,6 +3,7 @@ require 'application_store/store/store'
 require 'application_store/store/hash_store'
 require 'application_store/store/global_store'
 
+# TODO: development method_missing to be able to call keys via methods
 module ApplicationStore
   class StoreComposite < GeneralStore
     extend Forwardable
