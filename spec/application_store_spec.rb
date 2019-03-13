@@ -72,5 +72,23 @@ RSpec.describe ApplicationStore do
         expect(subject.rename('another-new-store')).to eq({"another-new-store" => subject.applications.store})
       end
     end
+    context "#config" do
+      before do
+        allow(ApplicationStore::Config).to receive(:environment).and_return environment
+        allow(ApplicationStore::Config).to receive(:config_path).and_return path_to_config
+      end
+
+      subject { described_class.config environment: :development, file_name: configuration_file_name }
+
+      let(:environment)    { :development }
+      let(:path_to_config) { File.join(File.expand_path(File.dirname(__FILE__)), 'config/') }
+      let(:configuration_file_name) { 'application_store.yml' }
+
+      specify { expect(described_class).to respond_to(:config).with_keywords(:environment, :file_name) }
+      specify { expect(described_class.config).to be_instance_of ApplicationStore::Config }
+      specify "memoizes" do
+        expect(described_class.config).to be described_class.config
+      end
+    end
   end
 end

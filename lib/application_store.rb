@@ -19,9 +19,15 @@ module ApplicationStore
     { "#{name}" => applications.store }
   end
 
-  module_function :root_path, :applications, :rename
+  def config environment: Config.environment, file_name: 'application_store.yml'
+    @config ||= Config.new environment: environment, file_name: file_name
+  end
+
+  module_function :root_path, :applications, :rename, :config
 end
 
 require_relative 'application_store/config'
 require_relative 'application_store/store_composite'
 require_relative 'application_store/core_ext/hash'
+
+
