@@ -32,7 +32,18 @@ module ApplicationStore
     configurations
   end
 
-  module_function :root_path, :applications, :rename, :config, :configurations
+  def run environment: Config.environment
+    configurations(environment: environment) do |configurations|
+      configurations.each_pair do |key, value|
+        store = applications.create name: key
+        value.each_pair do |key, value|
+          store.set key, value
+        end
+      end
+    end
+  end
+
+  module_function :root_path, :applications, :rename, :config, :configurations, :run
 end
 
 require_relative 'application_store/config'

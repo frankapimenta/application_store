@@ -120,5 +120,34 @@ RSpec.describe ApplicationStore do
         expect(described_class.configurations(environment: :staging).finance_manager.configurations.email.smtp.host).to match(/staging/)
       end
     end
+    context "#run" do
+      before do
+        allow(ApplicationStore::Config).to receive(:environment).and_return environment
+        allow(ApplicationStore::Config).to receive(:config_path).and_return path_to_config
+      end
+      let(:path_to_config) { File.join(File.expand_path(File.dirname(__FILE__)), 'config/') }
+      let(:applications)    { double :applications }
+      let(:configurations)  { double :configurations }
+      let(:environment)     { :development }
+      let(:store)           { double :store }
+      specify { expect(described_class).to respond_to(:run).with_keywords(:environment) }
+      specify "calls #configurations" do
+        expect(described_class).to receive(:configurations).with(environment: environment).and_yield configurations
+        expect(configurations).to receive(:each_pair)
+        described_class.run
+      end
+      specify "calls “#applications and #add" do
+        expect(described_class).to receive(:applications).and_return(applications)
+        expect(applications).to receive(:create).with(name: "finance_manager").and_return store
+        expect(store).to receive(:set).with("configurations", an_instance_of(ActiveSupport::HashWithIndifferentAccess)).and_return store
+        expect(store).to receive(:set).with("contacts_client", an_instance_of(ActiveSupport::HashWithIndifferentAccess)).and_return store
+        described_class.run
+      end
+      specify "stores configurations of applications" do
+        expect(described_class.applications.count).to eq 0
+        described_class.run
+        expect(described_class.applications.count).to eq 1
+      end
+    end
   end
 end
