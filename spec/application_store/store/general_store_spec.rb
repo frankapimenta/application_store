@@ -8,9 +8,29 @@ module ApplicationStore
       specify "raises error if store is nil" do
         expect { described_class.new nil }.to raise_error StandardError, "a store must be set for the store"
       end
+      specify "accepts parent" do
+        expect { described_class.new store, parent: store }.not_to raise_error
+      end
+      specify "stores parent in @parent" do
+        expect(described_class.new(store, parent: store).instance_variable_get(:@parent)).to eq store
+      end
     end
     context "instance methods" do
       context "public methods" do
+        context "#parent" do
+          specify { expect(subject).to respond_to(:parent).with(0).arguments }
+          specify { expect(subject.parent).to be_falsey }
+        end
+        context "#parent=" do
+          specify { expect(subject).to respond_to(:parent=).with(1).arguments }
+          specify "assigns a parent store to the store" do
+            parent = double :parent
+            expect(subject.parent).to be_falsey
+            subject.parent = parent
+            expect(subject.parent).to be_truthy
+            expect(subject.parent).to be parent
+          end
+        end
         context "#each" do
           specify { expect(subject).to respond_to(:each).with(0).argument }
           specify { expect { subject.each }.not_to raise_error }

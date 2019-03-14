@@ -1,11 +1,11 @@
 module ApplicationStore
   class GeneralStore
+    attr_accessor :parent
     attr_reader :store
 
-    def initialize store
+    def initialize store, parent: nil
       raise StandardError.new "a store must be set for the store" if store.nil?
-
-      @store = store
+      @store, @parent = store, parent
     end
 
     def method_missing method, *args, &block

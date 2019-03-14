@@ -9,7 +9,7 @@ module ApplicationStore
     include Enumerable
     def_delegators :store, :clear, :empty?, :has_key?, :to_hash
 
-    def initialize store=Hash.new
+    def initialize store=Hash.new, parent: nil
       # TODO: hash or hash with indeferent access else raise
       super
     end

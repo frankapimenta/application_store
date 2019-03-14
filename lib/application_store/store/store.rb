@@ -6,8 +6,8 @@ module ApplicationStore
     extend Forwardable
     def_delegators :@store, :get, :set, :unset, :clear, :to_hash
 
-    def initialize store= HashStore.new, name: nil
-      super store
+    def initialize store= HashStore.new, name: nil, parent: nil
+      super store, parent: parent
       self.name       = name.to_sym unless name.nil?
     end
 

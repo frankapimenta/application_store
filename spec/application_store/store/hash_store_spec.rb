@@ -11,10 +11,37 @@ module ApplicationStore
     context "included modules" do
       specify { expect(described_class.included_modules).to include Enumerable }
     end
+    context "initialization" do
+      specify "with default store" do
+        expect(subject.store).to be_instance_of Hash
+      end
+      specify "store is given via args" do
+        store = {}
+        expect(described_class.new(store).store).to eq store
+      end
+      specify "stores parent in @parent" do
+        store = {}
+        expect(described_class.new(store, parent: store).instance_variable_get(:@parent)).to eq store
+      end
+    end
     context "instance methods" do
       let(:store) { subject.store }
       after do
         subject.instance_variable_set(:@store, Hash.new)
+      end
+      context "#parent" do
+        specify { expect(subject).to respond_to(:parent).with(0).arguments }
+        specify { expect(subject.parent).to be_falsey }
+      end
+      context "#parent=" do
+        specify { expect(subject).to respond_to(:parent=).with(1).arguments }
+        specify "assigns a parent store to the store" do
+          parent = double :parent
+          expect(subject.parent).to be_falsey
+          subject.parent = parent
+          expect(subject.parent).to be_truthy
+          expect(subject.parent).to be parent
+        end
       end
       context "#each" do
         specify { expect(subject).to respond_to(:each).with(0).argument }
