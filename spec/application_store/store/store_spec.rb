@@ -106,9 +106,9 @@ module ApplicationStore
           end
         end
         context "#name" do
+          before { subject.name= "name" }
           specify { expect(subject).to respond_to(:name).with(0).arguments }
           specify "gets name from ivar @name" do
-            subject.name= "name"
             expect(subject.name).to eq "name".to_sym
           end
         end
