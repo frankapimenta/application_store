@@ -99,10 +99,44 @@ module ApplicationStore
       end
       context "attributes" do
         context "#name=" do
+          let(:composite) { StoreComposite.new name: 'test-store' }
           specify { expect(subject).to respond_to(:name=).with(1).argument }
+          specify "does not set name in parent if there is no parent" do
+            parent        = subject.parent
+
+            expect(subject).to receive(:parent).and_return parent
+            expect(parent).not_to receive(:set)
+            expect(parent).not_to receive(:unsetset)
+
+            subject.name  = "new_name"
+          end
           specify "sets name for application store" do
             subject.name= "name"
             expect(subject.get :name).to eq "name".to_sym
+          end
+          specify "parent changes key with store to store name as well" do
+            subject.parent = composite
+
+            parent        = subject.parent
+            previous_name = subject.name
+
+            expect(subject).to receive(:parent).at_least(4).times.and_return parent
+            expect(parent).to receive(:set).with(:new_name, subject).and_return parent
+            expect(parent).to receive(:unset).with(previous_name)
+            # expect(subject.get :name).to eq "new_name".to_sym
+            # expect(subject.parent.get(:new_name)).to be subject
+
+            subject.name  = "new_name"
+
+            subject.parent.destroy!
+          end
+          specify "changes name effectively" do
+            subject.parent = composite
+            expect(subject.name).to eq :app0
+            subject.name = 'new_name'
+            expect(subject.name).to eq :new_name
+            expect(subject.parent.get(:new_name)).to be subject
+            expect(subject.parent.new_name).to be subject
           end
         end
         context "#name" do

@@ -8,7 +8,7 @@ module ApplicationStore
 
     def initialize store= HashStore.new, name: nil, parent: nil
       super store, parent: parent
-      self.name       = name.to_sym unless name.nil?
+      self.name = name.to_sym unless name.nil?
     end
 
     def name
@@ -16,7 +16,14 @@ module ApplicationStore
     end
 
     def name= name
-      set :name, name.to_sym
+      old_name, new_name = self.name, name.to_sym
+
+      set :name, new_name
+
+      unless parent.nil?
+        self.parent.set(new_name, self)
+        self.parent.unset(old_name)
+      end
     end
 
   end
