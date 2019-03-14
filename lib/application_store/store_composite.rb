@@ -27,6 +27,7 @@ module ApplicationStore
       unless force || get(application_store.name.to_sym).nil?
         raise StandardError, "there is already an application with the same name in the store"
       else
+        application_store.parent = self
         set application_store.name, application_store
       end
     end

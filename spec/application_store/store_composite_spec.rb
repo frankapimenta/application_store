@@ -198,6 +198,13 @@ module ApplicationStore
           subject.add application_store
           expect { subject.add application_store, force: true }.not_to raise_error
         end
+        specify "adds application with parent" do
+          app_store = Store.new parent: subject, name: 'app_store'
+          expect(app_store).to receive(:parent=).with(subject)
+          subject.add app_store
+          expect(subject.get(:app_store)).to be app_store
+          expect(subject.get(:app_store).parent).to be subject
+        end
       end
       context "#remove" do
         let(:application_store) { Store.new name: 'app0'}
@@ -235,6 +242,9 @@ module ApplicationStore
         end
         specify "returns created app" do
           expect(subject.create name: 'application_name').to be_instance_of Store
+        end
+        specify "has self as parent" do
+          expect(subject.create(name: 'application_name').parent).to be subject
         end
       end
       context "#store" do
