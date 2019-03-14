@@ -18,16 +18,13 @@ module ApplicationStore
         expect(described_class.new(internal_store: Hash.new).store).to be_instance_of Hash
       end
       specify "default name is :default_store" do
-        expect(subject.instance_variable_get :@name).to eq :__default__store__
+        expect(subject.name).to eq :__default__store__
       end
       specify "allows passing a name for store" do
-        expect(described_class.new(name: :store).instance_variable_get(:@name)).to eq :__store__store__
+        expect(described_class.new(name: :store).name).to eq :__store__store__
       end
       specify "name is always a symbol" do
-        expect(described_class.new(name: "store").instance_variable_get(:@name)).to eq :__store__store__
-      end
-      context "#::applications storage default name is :app" do
-        specify { expect(subject.name).to eq :__default__store__ }
+        expect(described_class.new(name: "store").name).to eq :__store__store__
       end
       context "store name is prefixed with __ and suffixed with __store__" do
         specify { expect(described_class.new(name: 'contacts_client').name).to eq :__contacts_client__store__ }
@@ -41,7 +38,8 @@ module ApplicationStore
         specify { expect(store.name).to eq(:__store__store__)}
       end
       context "#rename" do
-        subject { described_class.new name: 'store' }
+        after { subject.destroy! }
+        subject { described_class.new(name: 'store') }
         specify { expect(subject).to respond_to(:rename).with(1).argument }
         specify "rename repo" do
           subject.set :boo, :boo
@@ -53,6 +51,7 @@ module ApplicationStore
           expect(subject.store).to eq store
           expect(subject.get(:boo)).to eq :boo
           expect(subject.instance_variable_get(:@store).store.keys).not_to include :__store__store__
+          expect(subject.instance_variable_get(:@store).store.keys).to include :__api_token_bitches__
         end
       end
       context "#get" do
