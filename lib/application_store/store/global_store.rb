@@ -5,7 +5,7 @@ module ApplicationStore
   class GlobalStore < GeneralStore
     using Refinements
     extend Forwardable
-    include Enumerable
+    include Enumerable, Parenthood
     def_delegators :store, :clear, :empty?, :has_key?
 
     def initialize store= ::RequestStore.store, parent: nil

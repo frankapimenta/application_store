@@ -6,7 +6,7 @@ module ApplicationStore
   class HashStore < GeneralStore
     using Refinements
     extend Forwardable
-    include Enumerable
+    include Enumerable, Parenthood
     def_delegators :store, :clear, :empty?, :has_key?, :to_hash
 
     def initialize store=Hash.new, parent: nil

@@ -4,6 +4,7 @@ require_relative 'hash_store'
 module ApplicationStore
   class Store < GeneralStore
     extend Forwardable
+    include Parenthood
     def_delegators :store, :get, :set, :unset, :clear, :to_hash
 
     def initialize store= HashStore.new, name: nil, parent: nil

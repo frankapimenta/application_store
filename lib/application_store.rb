@@ -1,5 +1,6 @@
 # TODO: check #count on #applications for empty store
 require "application_store/version"
+require "application_store/modules/parenthood"
 
 module ApplicationStore
 
