@@ -1,4 +1,5 @@
 RSpec.shared_examples "a hash store" do
+  after { RequestStore.clear! }
   specify { expect(described_class.included_modules).to include ApplicationStore::Parenthood }
   context "instance_methods" do
     context "#parent" do
