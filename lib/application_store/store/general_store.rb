@@ -1,6 +1,5 @@
 module ApplicationStore
   class GeneralStore
-    attr_accessor :parent
     attr_reader :store
 
     def initialize store, parent: nil
@@ -10,6 +9,14 @@ module ApplicationStore
 
     def method_missing method, *args, &block
       is_writter?(method) ? set(method[0...-1].to_sym, args.pop) : get(method.to_sym)
+    end
+
+    def parent
+      raise NotImplementedError.new "implement method in child class"
+    end
+
+    def parent= parent
+      raise NotImplementedError.new "implement method in child class"
     end
 
     def each &block
