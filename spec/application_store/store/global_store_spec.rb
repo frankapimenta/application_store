@@ -1,6 +1,5 @@
 module ApplicationStore
   RSpec.describe GlobalStore do
-    it_behaves_like "a hash store"
     it_behaves_like "a getter and setter with indifferent keys"
 
     specify { expect(described_class.superclass).to eq GeneralStore }

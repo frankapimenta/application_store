@@ -1,6 +1,7 @@
 require 'forwardable'
 require 'request_store'
 
+# GLOBAL STORES HAVE NO PARENTS BECAUSE THEY ARE ROOT
 module ApplicationStore
   class GlobalStore < GeneralStore
     using Refinements
