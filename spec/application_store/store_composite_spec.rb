@@ -180,30 +180,75 @@ module ApplicationStore
         end
       end
       context "#add" do
-        let(:application_store) { Store.new }
-        before do
-          application_store.name= :app0
+        let(:store)             { Store.new name: 'store' }
+        let(:same_name_store)   { Store.new name: store.name }
+        let(:other_store)       { Store.new name: 'other-store' }
+        let(:different_parent)  { StoreComposite.new name: 'other-store-composite' }
+        after do
+          # subject.remove store
+          # subject.remove same_name_store
+          # store.parent           = nil
+          # same_name_store.parent = nil
+          # other_store.parent     = nil
+          # subject.destroy!
         end
-        after { subject.clear }
         specify { expect(subject).to respond_to(:add).with(1).argument.with_keywords(:force) }
-        specify "adds application store" do
-          subject.add application_store
-          expect(store.get :app0).to eq application_store
+        context "when parent is inexistant" do
+          specify "raises error if there are stores with the same name" do
+            subject.add store
+            expect { subject.add same_name_store }.to raise_error "a store with same name already exists"
+          end
         end
-        specify "raises error if application is already present" do
-          subject.add application_store
-          expect { subject.add application_store }.to raise_error StandardError, "there is already an application with the same name in the store"
+        context "when parent is the same" do
+          specify "skips adding if there are no stores with the same name" do
+            store.parent       = subject
+            other_store.parent = subject
+            expect(other_store).not_to receive(:parent=)
+            expect(subject).not_to receive(:set)
+            expect { subject.add other_store }.not_to raise_error
+          end
+          xspecify "skips adding if a store with the same name exists" do
+            #same_name has no parent when adding subject it already exists
+            store.parent           = subject
+            same_name_store.parent = subject
+            expect(same_name_store).not_to receive(:parent=)
+            expect(subject).not_to receive(:set)
+            expect { subject.add same_name_store }.not_to raise_error
+          end
         end
-        specify "allows the option to force the adding of a new application (in case it already exists)" do
-          subject.add application_store
-          expect { subject.add application_store, force: true }.not_to raise_error
-        end
-        specify "adds application with parent" do
-          app_store = Store.new parent: subject, name: 'app_store'
-          expect(app_store).to receive(:parent=).with(subject)
-          subject.add app_store
-          expect(subject.get(:app_store)).to be app_store
-          expect(subject.get(:app_store).parent).to be subject
+        context "when parent is different" do
+          specify "raises error if a store with the same name exists" do
+            # store            = Store.new name: 'name', parent: subject
+            # different_parent = StoreComposite.new name: 'other-store-composite'
+            # allow(different_parent).to receive(:set)
+            # same_name_store  = Store.new name: store.name, parent: different_parent
+
+            store.parent           = subject
+            same_name_store.parent = different_parent
+            expect { subject.add same_name_store }.to raise_error "a store with same name already exists"
+          end
+          specify "replaces store if a store with the same name exists and force option is true (old parent has to have store removed, old store has to be destroyed)" do
+            store.parent = subject
+            allow(different_parent).to receive(:set)
+            same_name_store.parent = different_parent
+            expect { subject.add same_name_store, force: true }.not_to raise_error
+            expect(store.parent).to be_falsey
+            expect(same_name_store.parent).to be subject.store
+            expect(subject.count).to eq 1
+          end
+          specify "adds store if there are no stores with the same name (old parent has to have the store removed)" do
+            store.parent = subject
+            allow(different_parent).to receive(:set)
+            other_store.parent = different_parent
+            expect { subject.add other_store }.not_to raise_error
+            expect(other_store.parent).to be subject.store
+            expect(subject.count).to eq 2
+          end
+          specify "returns added store" do
+            store.parent = subject
+            other_store.parent = different_parent
+            expect(subject.add other_store).to eq other_store
+          end
         end
       end
       context "#remove" do
@@ -244,7 +289,8 @@ module ApplicationStore
           expect(subject.create name: 'application_name').to be_instance_of Store
         end
         specify "has self as parent" do
-          expect(subject.create(name: 'application_name').parent).to be subject
+          app_store = subject.create(name: 'application_name')
+          expect(subject.get(app_store.name).parent).to be subject.store
         end
       end
       context "#store" do

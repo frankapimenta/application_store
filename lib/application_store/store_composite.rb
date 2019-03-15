@@ -3,8 +3,10 @@ require 'application_store/store/store'
 require 'application_store/store/hash_store'
 require 'application_store/store/global_store'
 
+#TODO: modify the parent from self to store
 module ApplicationStore
   class StoreComposite < GeneralStore
+    include Parenthood
     extend Forwardable
     attr_reader :name
     def_delegators :store, :get, :set, :unset, :count, :empty?, :has_key?
@@ -24,11 +26,21 @@ module ApplicationStore
     end
 
     def add application_store, force: false
-      unless force || get(application_store.name.to_sym).nil?
-        raise StandardError, "there is already an application with the same name in the store"
-      else
-        application_store.parent = self
-        set application_store.name, application_store
+      unless application_store.parent == self
+        unless force || get(application_store.name.to_sym).nil?
+          raise StandardError, "a store with same name already exists"
+        else
+          if force
+            old_store        = self.get(application_store.name)
+            old_store_parent = old_store.parent
+            old_store_parent.unset(old_store.name)
+            old_store.parent = nil
+          end
+          application_store.parent = self.store
+          set application_store.name, application_store
+
+          application_store
+        end
       end
     end
 

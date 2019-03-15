@@ -20,10 +20,10 @@ module ApplicationStore
       old_name, new_name = self.name, name.to_sym
 
       set :name, new_name
-
-      unless parent.nil?
+      # if there is no old name do not set the parent?
+      unless self.parent.nil?
+        self.parent.unset(old_name) unless old_name.nil?
         self.parent.set(new_name, self)
-        self.parent.unset(old_name)
       end
     end
 
