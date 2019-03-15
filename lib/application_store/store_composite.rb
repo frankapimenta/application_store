@@ -44,8 +44,9 @@ module ApplicationStore
       end
     end
 
-    def remove application_store# TODO: has to remove parent from store
+    def remove application_store
       raise StandardError, "application does not exist in the store" unless get(application_store.name)
+      application_store.parent = nil
       store.unset application_store.name
     end
 

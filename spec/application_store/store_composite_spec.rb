@@ -272,6 +272,13 @@ module ApplicationStore
           subject.remove application_store
           expect(store).not_to have_key application_store.name
         end
+        specify "sets parent to nil when removing" do
+          subject.remove application_store
+          expect(application_store.parent).to be_falsey
+        end
+        specify "returns removed store" do
+          expect(subject.remove application_store).to eq application_store
+        end
       end
       context "#create" do
         after { subject.clear }
