@@ -1,4 +1,5 @@
 RSpec.shared_examples "a hash store" do
+  specify { expect(described_class.included_modules).to include ApplicationStore::Parenthood }
   context "instance_methods" do
     context "#parent" do
       specify { expect(subject).to respond_to(:parent).with(0).arguments }
@@ -6,12 +7,18 @@ RSpec.shared_examples "a hash store" do
     end
     context "#parent=" do
       specify { expect(subject).to respond_to(:parent=).with(1).arguments }
+      specify "does not assign self to parent if it is nil" do
+        parent = nil
+        expect(parent).not_to receive(:add)
+        subject.parent = parent
+      end
       specify "assigns a parent store to the store" do
-        parent = double :parent
+        parent = ApplicationStore::StoreComposite.new name: 'fake-store-composite'
         expect(subject.parent).to be_falsey
         subject.parent = parent
         expect(subject.parent).to be_truthy
         expect(subject.parent).to be parent
+        expect(parent.get(subject.name)).to be subject
       end
     end
     context "on method missing" do
