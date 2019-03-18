@@ -43,6 +43,10 @@ some_client.set :github_api_token, 'pretty token'
 github_token = some_client.get :github_api_token
   => "pretty_token"
 
+# Instead of calling ```#get :<key>``` you could also directly send the message to the receiver:
+some_client.github_api_token
+  => "pretty_token"
+
 some_client.to_hash
   => {:name => :some_client, :github_api_token => "pretty token"}
 
@@ -69,7 +73,69 @@ applications.unset :some_client
   => {:boo => { }}
 
 ```
+Sometimes one needs to use a yaml configuration file to get keys from operating system environment variables.
+You can create a application_store.yml file in application's config folder with this values.
 
+```ruby
+=> lib/config/application_store.yml
+```
+
+#### example
+The yaml file:
+```yml
+application_store:
+  development:
+    finance_manager:
+      configurations:
+        email:
+          smtp:
+            host: 'development.smtp.x.ch'
+          pop3:
+            host: 'development.pop3.x.ch'
+      contacts_client:
+        host: 'development.localhost'
+        port: 3001
+        api_key: 'development.asdasdasdasd'
+  staging:
+    finance_manager:
+      configurations:
+        email:
+          smtp:
+            host: 'staging.smtp.x.ch'
+          pop3:
+            host: 'staging.pop3.x.ch'
+      contacts_client:
+        host: 'staging.localhost'
+        port: 3002
+        api_key: 'staging.asdasdasdasd'
+````
+The code to run
+```ruby
+  ApplicationStore.run!(environment: :development)
+{
+    "finance_manager" => {
+         "configurations" => {
+            "email" => {
+                "smtp" => {
+                    "host" => "development.smtp.x.ch"
+                },
+                "pop3" => {
+                    "host" => "development.pop3.x.ch"
+                }
+            }
+        },
+        "contacts_client" => {
+               "host" => "development.localhost",
+               "port" => 3001,
+            "api_key" => "development.asdasdasdasd"
+        }
+    }
+}
+
+ApplicationStore.applications.finance_manager.configurations.email.smtp.host
+  => "development.smtp.x.ch"
+```
+You can load a yaml file into application store
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
