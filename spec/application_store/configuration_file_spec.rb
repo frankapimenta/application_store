@@ -1,6 +1,9 @@
 module ApplicationStore
   RSpec.describe ConfigurationFile do
-    before { allow(ENV).to receive(:[]).with('APPLICATION_STORE_ROOT_PATH').and_return root_path }
+    before do
+      allow(ENV).to receive(:[]).with('APPLICATION_STORE_CONFIG_PATH')
+      allow(ENV).to receive(:[]).with('APPLICATION_STORE_ROOT_PATH').and_return root_path
+    end
 
     subject { described_class.new(location_path: location_path, file_name: file_name) }
 

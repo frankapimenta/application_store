@@ -94,16 +94,24 @@ RSpec.describe ApplicationStore::Config do
       end
     end
     context ".config_path" do
-      before { allow(ENV).to receive(:[]).with('APPLICATION_STORE_ROOT_PATH').and_return root_path }
+      before do
+        allow(ENV).to receive(:[]).with('APPLICATION_STORE_CONFIG_PATH')
+        allow(ENV).to receive(:[]).with('APPLICATION_STORE_ROOT_PATH').and_return root_path
+      end
       let(:root_path) { '/' }
       let(:config_path) { File.join(ApplicationStore::root_path, 'lib/config') }
+      let(:spec_config_path) { File.join(ApplicationStore::root_path, 'spec/config') }
       specify { expect(described_class).to respond_to(:config_path).with(0).arguments }
       context "default path" do
         specify "receives root_path" do
-          expect(ApplicationStore).to receive(:root_path).and_call_original
+          expect(ApplicationStore).to receive(:root_path).and_return root_path
           described_class.config_path
         end
         specify { expect(described_class.config_path).to eq config_path }
+      end
+      specify "gets config path from ENV APPLICATION_STORE_CONFIG_PATH" do
+        expect(ENV).to receive(:[]).with('APPLICATION_STORE_CONFIG_PATH').and_return spec_config_path
+        expect(described_class.config_path).to eq spec_config_path
       end
     end
   end
