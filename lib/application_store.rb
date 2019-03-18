@@ -25,8 +25,8 @@ module ApplicationStore
     @config ||= Config.new environment: environment, file_name: file_name
   end
 
-  def configurations environment: Config.environment
-    configurations = config(environment: environment).configurations(environment: environment)
+  def configurations environment: Config.environment, file_name: 'application_store.yml'
+    configurations = config(environment: environment, file_name: file_name).configurations(environment: environment)
 
     yield configurations if block_given?
 
