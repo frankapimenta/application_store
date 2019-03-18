@@ -1,3 +1,4 @@
+# TODO: check if parent is working ok due to storecomposite store being store and not @store
 RSpec.shared_examples "a hash store" do
   after { RequestStore.clear! }
   specify { expect(described_class.included_modules).to include ApplicationStore::Parenthood }

@@ -2,6 +2,7 @@ module ApplicationStore
   RSpec.describe GlobalStore do
     it_behaves_like "a getter and setter with indifferent keys"
 
+    # TODO hash store has to have a name because then how can we had and remove it to store composite?
     specify { expect(described_class.superclass).to eq GeneralStore }
     specify { expect{ described_class.new }.not_to raise_error }
     context "extended modules" do
