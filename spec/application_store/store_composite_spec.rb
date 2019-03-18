@@ -318,6 +318,12 @@ module ApplicationStore
         specify "returns store" do
           expect(subject.store).to eq subject.instance_variable_get(:@store).get(:__default__store__)
         end
+        specify "raises error when store was destroyed" do
+          expect(subject.destroyed?).to eq false
+          subject.destroy!
+          expect(subject.destroyed?).to eq true
+          expect { subject.store }.to raise_error StandardError, "this store is destroyed and cannot be used anymore!"
+        end
       end
     end
   end

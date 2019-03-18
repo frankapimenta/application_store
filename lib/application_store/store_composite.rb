@@ -79,6 +79,8 @@ module ApplicationStore
     end
 
     def store
+      raise StandardError.new "this store is destroyed and cannot be used anymore!" if destroyed?
+
       @store.get(@name)
     end
   end
