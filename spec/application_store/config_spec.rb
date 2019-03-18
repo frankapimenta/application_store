@@ -99,7 +99,7 @@ RSpec.describe ApplicationStore::Config do
         allow(ENV).to receive(:[]).with('APPLICATION_STORE_ROOT_PATH').and_return root_path
       end
       let(:root_path) { '/' }
-      let(:config_path) { File.join(ApplicationStore::root_path, 'lib/config') }
+      let(:config_path) { File.join(ApplicationStore::root_path, 'config') }
       let(:spec_config_path) { File.join(ApplicationStore::root_path, 'spec/config') }
       specify { expect(described_class).to respond_to(:config_path).with(0).arguments }
       context "default path" do
