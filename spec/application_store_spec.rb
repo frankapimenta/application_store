@@ -1,10 +1,35 @@
 RSpec.describe ApplicationStore do
+  before { allow(ENV).to receive(:[]).with('APPLICATION_STORE_ROOT_PATH').and_return root_path }
   after { subject.instance_variable_set(:@applications, nil) }
+  let(:root_path) { "/" }
+
   specify { expect(subject).to be_instance_of Module }
   context "module methods" do
     context "::root_path" do
+      let(:root_path) { "lib/config/application_store/" }
       specify { expect(described_class).to respond_to(:root_path).with(0).arguments }
-      specify { expect(described_class::root_path).to eq File.expand_path(File.join(File.dirname(__FILE__), '../')) }
+      context "given path via Rails.root" do
+        specify "expects to call Rails.root" do
+          rails = class_double('Rails').as_stubbed_const(:transfer_nested_constants => true)
+          expect(Object).to receive(:const_defined?).with(:Rails).and_return true
+          expect(rails).to receive(:root).and_return root_path
+          expect(described_class.root_path).to eq root_path
+        end
+      end
+      context "given path via ENV variable" do
+        specify "calls ENV" do
+          expect(ENV).to receive(:[]).with('APPLICATION_STORE_ROOT_PATH')
+          described_class.root_path
+        end
+        specify "returns ENV instance of default config path" do
+          allow(ENV).to receive(:[]).and_return root_path
+          expect(described_class.root_path).to eq root_path
+        end
+      end
+      context "raises if not in rails and env var not defined" do
+        before { allow(ENV).to receive(:[]).with('APPLICATION_STORE_ROOT_PATH') }
+        specify { expect { described_class.root_path }.to raise_error StandardError, "you must defined env var APPLICATION_STORE_ROOT_PATH when not in a Rails app" }
+      end
     end
     context "::applications" do
       let(:applications) { described_class.applications }
@@ -87,7 +112,10 @@ RSpec.describe ApplicationStore do
       specify { expect(described_class.config).to be_instance_of ApplicationStore::Config }
     end
     context "#configurations" do
-      before { allow(ApplicationStore::Config).to receive(:environment).and_return environment }
+      before do
+        allow(ApplicationStore::Config).to receive(:environment).and_return environment
+        allow(ApplicationStore::Config).to receive(:config_path).and_return 'spec/config'
+      end
       let(:environment)       { :development }
       let(:config)            { double :config }
       let(:file_name)         { 'another_application_store_config_file.yml' }

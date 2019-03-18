@@ -1,11 +1,14 @@
 module ApplicationStore
   RSpec.describe ConfigurationFile do
+    before { allow(ENV).to receive(:[]).with('APPLICATION_STORE_ROOT_PATH').and_return root_path }
+
     subject { described_class.new(location_path: location_path, file_name: file_name) }
 
-    let(:config_class)            { ApplicationStore::Config }
-    let(:location_path)           { config_class.config_path }
-    let(:file_name)               { 'application_store.yml' }
-    let(:file_path) { "#{location_path}/#{file_name}" }
+    let(:config_class)  { ApplicationStore::Config }
+    let(:location_path) { config_class.config_path }
+    let(:file_name)     { 'application_store.yml' }
+    let(:file_path)     { "#{location_path}/#{file_name}" }
+    let(:root_path)     { '/' }
 
     context "CONSTANTS" do
       specify { expect(described_class::ALLOWED_EXTENSIONS).to eq [:yaml, :yml] }

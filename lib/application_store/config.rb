@@ -28,7 +28,7 @@ module ApplicationStore
       end
 
       def config_path
-        ENV['APPLICATION_STORE_CONFIG_PATH'] || File.join(ApplicationStore::root_path, 'lib/config')
+        File.join(ApplicationStore::root_path, 'lib/config')
       end
     end
 
