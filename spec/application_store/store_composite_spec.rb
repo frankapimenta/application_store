@@ -29,8 +29,21 @@ module ApplicationStore
       context "store name is prefixed with __ and suffixed with __store__" do
         specify { expect(described_class.new(name: 'contacts_client').name).to eq :__contacts_client__store__ }
       end
+      context "sets @destroyed as false" do
+        specify { expect(subject.instance_variable_get(:@destroyed)).to eq false }
+      end
     end
     context "instance methods" do
+      context "#destroyed?" do
+        specify { expect(subject).to respond_to(:destroyed?).with(0).arguments }
+        specify "is not destroyed after initialization" do
+          expect(subject.destroyed?).to eq false
+        end
+        specify "is #destroyed? after destroyed" do
+          subject.destroy!
+          expect(subject.destroyed?).to eq true
+        end
+      end
       context "#name" do
         let(:store) { described_class.new name: 'store' }
         specify { expect(subject).to respond_to(:name).with(0).arguments }

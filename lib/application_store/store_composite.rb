@@ -15,6 +15,13 @@ module ApplicationStore
       super global_store
       @name = name.nil? ? :__default__store__ : "__#{name}__store__".to_sym
       @store.set @name, internal_store
+
+      # tells if store was destroyed and so makes it unusable anymore
+      @destroyed = false
+    end
+
+    def destroyed?
+      @destroyed
     end
 
     def rename name
@@ -60,6 +67,7 @@ module ApplicationStore
 
     def destroy!
       @store.clear
+      @destroyed = true
     end
 
     def hashify_store
