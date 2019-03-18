@@ -1,0 +1,13 @@
+other_application_store:
+  staging:
+    finance_manager:
+      configurations:
+        email:
+          smtp:
+            host: 'staging.smtp.y.ch'
+          pop3:
+            host: 'staging.pop3.y.ch'
+      contacts_client:
+        host: 'staging.localhost'
+        port: 3002
+        api_key: 'staging.itisso'

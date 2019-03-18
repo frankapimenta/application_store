@@ -33,8 +33,8 @@ module ApplicationStore
     configurations
   end
 
-  def run! environment: Config.environment
-    configurations(environment: environment) do |configurations|
+  def run! environment: Config.environment, file_name: 'application_store.yml'
+    configurations(environment: environment, file_name: file_name) do |configurations|
       configurations.each_pair do |key, value|
         store = applications.create name: key
         value.each_pair do |key, value|
