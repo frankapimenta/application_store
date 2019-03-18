@@ -5,11 +5,12 @@ require "application_store/modules/parenthood"
 module ApplicationStore
 
   def root_path
+    return ENV['APPLICATION_STORE_ROOT_PATH'] if ENV['APPLICATION_STORE_ROOT_PATH']
+
     return Rails.root if Object.const_defined? :Rails
 
-    raise StandardError.new "you must defined env var APPLICATION_STORE_ROOT_PATH when not in a Rails app" unless ENV['APPLICATION_STORE_ROOT_PATH']
+    raise StandardError.new "you must defined env var APPLICATION_STORE_ROOT_PATH when not in a Rails app"
 
-    ENV['APPLICATION_STORE_ROOT_PATH']
   end
 
   def applications(name: nil)

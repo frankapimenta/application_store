@@ -8,14 +8,6 @@ RSpec.describe ApplicationStore do
     context "::root_path" do
       let(:root_path) { "lib/config/application_store/" }
       specify { expect(described_class).to respond_to(:root_path).with(0).arguments }
-      context "given path via Rails.root" do
-        specify "expects to call Rails.root" do
-          rails = class_double('Rails').as_stubbed_const(:transfer_nested_constants => true)
-          expect(Object).to receive(:const_defined?).with(:Rails).and_return true
-          expect(rails).to receive(:root).and_return root_path
-          expect(described_class.root_path).to eq root_path
-        end
-      end
       context "given path via ENV variable" do
         specify "calls ENV" do
           expect(ENV).to receive(:[]).with('APPLICATION_STORE_ROOT_PATH')
@@ -23,6 +15,15 @@ RSpec.describe ApplicationStore do
         end
         specify "returns ENV instance of default config path" do
           allow(ENV).to receive(:[]).and_return root_path
+          expect(described_class.root_path).to eq root_path
+        end
+      end
+      context "given path via Rails.root" do
+        before { allow(ENV).to receive(:[]).with('APPLICATION_STORE_ROOT_PATH') }
+        specify "expects to call Rails.root" do
+          rails = class_double('Rails').as_stubbed_const(:transfer_nested_constants => true)
+          expect(Object).to receive(:const_defined?).with(:Rails).and_return true
+          expect(rails).to receive(:root).and_return root_path
           expect(described_class.root_path).to eq root_path
         end
       end
