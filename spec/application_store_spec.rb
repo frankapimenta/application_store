@@ -85,9 +85,6 @@ RSpec.describe ApplicationStore do
 
       specify { expect(described_class).to respond_to(:config).with_keywords(:environment, :file_name) }
       specify { expect(described_class.config).to be_instance_of ApplicationStore::Config }
-      specify "memoizes" do
-        expect(described_class.config).to be described_class.config
-      end
     end
     context "#configurations" do
       before { allow(ApplicationStore::Config).to receive(:environment).and_return environment }

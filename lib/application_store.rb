@@ -22,7 +22,7 @@ module ApplicationStore
   end
 
   def config environment: Config.environment, file_name: 'application_store.yml'
-    @config ||= Config.new environment: environment, file_name: file_name
+    Config.new environment: environment, file_name: file_name
   end
 
   def configurations environment: Config.environment, file_name: 'application_store.yml'
