@@ -46,9 +46,6 @@ RSpec.describe ApplicationStore do
       context "#::store storage default name is :__default__store__" do
         specify { expect(described_class.store.name).to eq :__default__store__ }
       end
-      context "store name is prefixed with __ and suffixed with __store__" do
-        specify { expect(described_class.store(name: 'contacts_client').name).to eq :__contacts_client__store__ }
-      end
     end
     context "can add and remove store auth data" do
       let(:application0) { ApplicationStore::Store.new name: 'application0' }

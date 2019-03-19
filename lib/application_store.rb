@@ -14,11 +14,7 @@ module ApplicationStore
   end
 
   def store(name: nil)
-    @store ||= if name
-      StoreComposite.new name: name
-    else
-      StoreComposite.new
-    end
+    @store ||= StoreComposite.new
   end
 
   def rename name
