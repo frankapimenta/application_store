@@ -50,26 +50,26 @@ RSpec.describe ApplicationStore::Config do
       specify { expect(subject.configuration_file).to eq subject.instance_variable_get(:@configuration_file) }
       specify { expect(subject.configuration_file).to be_instance_of ApplicationStore::ConfigurationFile }
     end
-    context "#configurations" do
+    context "#content" do
       let(:content) { double :content }
-      specify { expect(subject).to respond_to(:configurations).with_keywords(:environment) }
+      specify { expect(subject).to respond_to(:content).with_keywords(:environment) }
       specify "calls #content in configuration_file" do
         expect(subject).to receive(:configuration_file).twice.and_return content
         expect(content).to receive(:content).and_return content
         expect(content).to receive(:file_basename).and_return content
         expect(content).to receive(:[]).with(content).and_return content
         expect(content).to receive(:[]).with(:development).and_return content
-        subject.configurations
+        subject.content
       end
-      context "returns configurations for current env" do
-        specify { expect(subject.configurations).to be_instance_of ActiveSupport::HashWithIndifferentAccess }
-        specify { expect(subject.configurations).to be subject.configuration_file.content.application_store.development }
+      context "returns content for current env" do
+        specify { expect(subject.content).to be_instance_of ActiveSupport::HashWithIndifferentAccess }
+        specify { expect(subject.content).to be subject.configuration_file.content.application_store.development }
       end
       context "for given env :development" do
-        specify { expect(subject.configurations(environment: :development).finance_manager.configurations.email.smtp.host).to eq 'development.smtp.x.ch' }
+        specify { expect(subject.content(environment: :development).finance_manager.configurations.email.smtp.host).to eq 'development.smtp.x.ch' }
       end
       context "for given env :staging" do
-        specify { expect(subject.configurations(environment: :staging).finance_manager.configurations.email.smtp.host).to eq 'staging.smtp.x.ch' }
+        specify { expect(subject.content(environment: :staging).finance_manager.configurations.email.smtp.host).to eq 'staging.smtp.x.ch' }
       end
     end
   end

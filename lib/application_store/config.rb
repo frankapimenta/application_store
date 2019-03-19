@@ -12,7 +12,7 @@ module ApplicationStore
       raise StandardError.new "configuration file does not exist or path given is wrong" unless @configuration_file.exists?
     end
 
-    def configurations environment: self.environment
+    def content environment: self.environment
       # TODO: raise if content has not the environment key (due to bad file)
       configuration_file.content[configuration_file.file_basename][environment]
     end

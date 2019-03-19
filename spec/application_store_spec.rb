@@ -117,27 +117,27 @@ RSpec.describe ApplicationStore do
       let(:default_file_name) { 'application_store.yml' }
       specify { expect(described_class).to respond_to(:configurations).with_keywords(:environment, :file_name) }
       specify "calls ::config" do
-        expect(described_class).to receive_message_chain(:config, :configurations)
+        expect(described_class).to receive_message_chain(:config, :content)
         described_class.configurations
       end
       specify { expect(described_class.configurations).to be_instance_of ActiveSupport::HashWithIndifferentAccess }
       specify "expects to call ::config with no env given" do
-        expect(described_class).to receive_message_chain(:config, :configurations).and_return config
+        expect(described_class).to receive_message_chain(:config, :content).and_return config
         described_class.configurations
       end
       specify "expects to call ::config with default env and default file_name" do
         expect(described_class).to receive(:config).with(environment: :development, file_name: default_file_name).and_return config
-        expect(config).to receive(:configurations).with(environment: :development)
+        expect(config).to receive(:content).with(environment: :development)
         described_class.configurations
       end
       specify "expects to call ::config with given env and default file name" do
         expect(described_class).to receive(:config).with(environment: :staging, file_name: default_file_name).and_return config
-        expect(config).to receive(:configurations).with(environment: :staging)
+        expect(config).to receive(:content).with(environment: :staging)
         described_class.configurations(environment: :staging)
       end
       specify "expects to call :config with given file_name and default env" do
         expect(described_class).to receive(:config).with(environment: :development, file_name: file_name).and_return config
-        expect(config).to receive(:configurations).with(environment: :development)
+        expect(config).to receive(:content).with(environment: :development)
         described_class.configurations(file_name: file_name)
       end
       specify "yiels if block given" do
