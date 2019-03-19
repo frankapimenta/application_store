@@ -26,12 +26,12 @@ module ApplicationStore
     Config.new environment: environment, file_name: file_name
   end
 
-  def configurations environment: Config.environment, file_name: 'application_store.yml'
-    configurations = config(environment: environment, file_name: file_name).content(environment: environment)
+  def content environment: Config.environment, file_name: 'application_store.yml'
+    content = config(environment: environment, file_name: file_name).content(environment: environment)
 
-    yield configurations if block_given?
+    yield content if block_given?
 
-    configurations
+    content
   end
 
   def reset!
@@ -39,8 +39,8 @@ module ApplicationStore
   end
 
   def run! environment: Config.environment, file_name: 'application_store.yml'
-    configurations(environment: environment, file_name: file_name) do |configurations|
-      configurations.each_pair do |key, value|
+    content(environment: environment, file_name: file_name) do |content|
+      content.each_pair do |key, value|
         _store = store.create name: key
         value.each_pair do |key, value|
           _store.set key, value
@@ -49,7 +49,7 @@ module ApplicationStore
     end
   end
 
-  module_function :root_path, :store, :rename, :config, :configurations, :reset!, :run!
+  module_function :root_path, :store, :rename, :config, :content, :reset!, :run!
 end
 
 require_relative 'application_store/config'

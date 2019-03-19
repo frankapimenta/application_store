@@ -106,7 +106,7 @@ RSpec.describe ApplicationStore do
       specify { expect(described_class).to respond_to(:config).with_keywords(:environment, :file_name) }
       specify { expect(described_class.config).to be_instance_of ApplicationStore::Config }
     end
-    context "#configurations" do
+    context "#content" do
       before do
         allow(ApplicationStore::Config).to receive(:environment).and_return environment
         allow(ApplicationStore::Config).to receive(:config_path).and_return 'spec/config'
@@ -115,40 +115,40 @@ RSpec.describe ApplicationStore do
       let(:config)            { double :config }
       let(:file_name)         { 'another_application_store_config_file.yml' }
       let(:default_file_name) { 'application_store.yml' }
-      specify { expect(described_class).to respond_to(:configurations).with_keywords(:environment, :file_name) }
+      specify { expect(described_class).to respond_to(:content).with_keywords(:environment, :file_name) }
       specify "calls ::config" do
         expect(described_class).to receive_message_chain(:config, :content)
-        described_class.configurations
+        described_class.content
       end
-      specify { expect(described_class.configurations).to be_instance_of ActiveSupport::HashWithIndifferentAccess }
+      specify { expect(described_class.content).to be_instance_of ActiveSupport::HashWithIndifferentAccess }
       specify "expects to call ::config with no env given" do
         expect(described_class).to receive_message_chain(:config, :content).and_return config
-        described_class.configurations
+        described_class.content
       end
       specify "expects to call ::config with default env and default file_name" do
         expect(described_class).to receive(:config).with(environment: :development, file_name: default_file_name).and_return config
         expect(config).to receive(:content).with(environment: :development)
-        described_class.configurations
+        described_class.content
       end
       specify "expects to call ::config with given env and default file name" do
         expect(described_class).to receive(:config).with(environment: :staging, file_name: default_file_name).and_return config
         expect(config).to receive(:content).with(environment: :staging)
-        described_class.configurations(environment: :staging)
+        described_class.content(environment: :staging)
       end
       specify "expects to call :config with given file_name and default env" do
         expect(described_class).to receive(:config).with(environment: :development, file_name: file_name).and_return config
         expect(config).to receive(:content).with(environment: :development)
-        described_class.configurations(file_name: file_name)
+        described_class.content(file_name: file_name)
       end
       specify "yiels if block given" do
-        expect { |b| described_class.configurations(&b) }.to yield_control
-        described_class.configurations
+        expect { |b| described_class.content(&b) }.to yield_control
+        described_class.content
       end
-      specify "returns configurations for current env" do
-        expect(described_class.configurations.finance_manager.configurations.email.smtp.host).to match(/development/)
+      specify "returns content for current env" do
+        expect(described_class.content.finance_manager.configurations.email.smtp.host).to match(/development/)
       end
-      specify "returns configurations for staging env" do
-        expect(described_class.configurations(environment: :staging).finance_manager.configurations.email.smtp.host).to match(/staging/)
+      specify "returns content for staging env" do
+        expect(described_class.content(environment: :staging).finance_manager.configurations.email.smtp.host).to match(/staging/)
       end
     end
     context "#reset!" do
@@ -175,19 +175,19 @@ RSpec.describe ApplicationStore do
 
       let(:path_to_config) { File.join(File.expand_path(File.dirname(__FILE__)), 'config/') }
       let(:store)    { double :store }
-      let(:configurations)  { double :configurations }
+      let(:content)  { double :content }
       let(:environment)     { :development }
       let(:store)           { double :store }
       let(:default_file_name) { 'application_store.yml' }
       specify { expect(described_class).to respond_to(:run!).with_keywords(:environment, :file_name) }
-      specify "calls #configurations with default environment and file_name" do
-        expect(described_class).to receive(:configurations).with(environment: environment, file_name: default_file_name).and_yield configurations
-        expect(configurations).to receive(:each_pair)
+      specify "calls #content with default environment and file_name" do
+        expect(described_class).to receive(:content).with(environment: environment, file_name: default_file_name).and_yield content
+        expect(content).to receive(:each_pair)
         described_class.run!
       end
-      specify "calls #configurations with given environment and file_name" do
-        expect(described_class).to receive(:configurations).with(environment: :staging, file_name: 'other_application_store.yml').and_yield configurations
-        expect(configurations).to receive(:each_pair)
+      specify "calls #content with given environment and file_name" do
+        expect(described_class).to receive(:content).with(environment: :staging, file_name: 'other_application_store.yml').and_yield content
+        expect(content).to receive(:each_pair)
         described_class.run! environment: :staging, file_name: 'other_application_store.yml'
       end
       specify "calls “#store and #add" do
@@ -197,12 +197,12 @@ RSpec.describe ApplicationStore do
         expect(store).to receive(:set).with("contacts_client", an_instance_of(ActiveSupport::HashWithIndifferentAccess)).and_return store
         described_class.run!
       end
-      specify "stores configurations of store for default variables" do
+      specify "stores content of store for default variables" do
         expect(described_class.store.count).to eq 0
         described_class.run!
         expect(described_class.store.count).to eq 1
       end
-      specify "stores configurations of store for given variables" do
+      specify "stores content of store for given variables" do
         expect(described_class.store.count).to eq 0
         described_class.run! environment: :staging, file_name: 'other_application_store.yml'
         expect(described_class.store.count).to eq 1
