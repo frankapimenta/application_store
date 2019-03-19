@@ -1,4 +1,4 @@
-# TODO: check #count on #applications for empty store
+# TODO: check #count on #store for empty store
 require "application_store/version"
 require "application_store/modules/parenthood"
 
@@ -13,8 +13,8 @@ module ApplicationStore
 
   end
 
-  def applications(name: nil)
-    @applications ||= if name
+  def store(name: nil)
+    @store ||= if name
       StoreComposite.new name: name
     else
       StoreComposite.new
@@ -22,8 +22,8 @@ module ApplicationStore
   end
 
   def rename name
-    applications.rename name
-    { "#{name}" => applications.store }
+    store.rename name
+    { "#{name}" => store.store }
   end
 
   def config environment: Config.environment, file_name: 'application_store.yml'
@@ -39,21 +39,21 @@ module ApplicationStore
   end
 
   def reset!
-    @applications = nil
+    @store = nil
   end
 
   def run! environment: Config.environment, file_name: 'application_store.yml'
     configurations(environment: environment, file_name: file_name) do |configurations|
       configurations.each_pair do |key, value|
-        store = applications.create name: key
+        _store = store.create name: key
         value.each_pair do |key, value|
-          store.set key, value
+          _store.set key, value
         end
       end
     end
   end
 
-  module_function :root_path, :applications, :rename, :config, :configurations, :reset!, :run!
+  module_function :root_path, :store, :rename, :config, :configurations, :reset!, :run!
 end
 
 require_relative 'application_store/config'

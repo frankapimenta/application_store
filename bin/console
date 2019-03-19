@@ -8,7 +8,7 @@ require "application_store"
 
 # (If you use this, don't forget to add pry to your Gemfile!)
 ApplicationStore.run!(environment: :development)
-applications    = ApplicationStore.applications
+store = ApplicationStore.store
 
 require "pry"
 Pry.start(binding, quiet: true)

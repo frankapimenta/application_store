@@ -1,6 +1,6 @@
 RSpec.describe ApplicationStore do
   before { allow(ENV).to receive(:[]).with('APPLICATION_STORE_ROOT_PATH').and_return root_path }
-  after { subject.instance_variable_set(:@applications, nil) }
+  after { subject.instance_variable_set(:@store, nil) }
   let(:root_path) { "/" }
 
   specify { expect(subject).to be_instance_of Module }
@@ -32,70 +32,70 @@ RSpec.describe ApplicationStore do
         specify { expect { described_class.root_path }.to raise_error StandardError, "you must defined env var APPLICATION_STORE_ROOT_PATH when not in a Rails app" }
       end
     end
-    context "::applications" do
-      let(:applications) { described_class.applications }
-      specify { expect(described_class).to respond_to(:applications) }
-      specify { expect(described_class.applications).to be_instance_of ApplicationStore::StoreComposite }
+    context "::store" do
+      let(:store) { described_class.store }
+      specify { expect(described_class).to respond_to(:store) }
+      specify { expect(described_class.store).to be_instance_of ApplicationStore::StoreComposite }
       specify "memoizes" do
-        _applications = described_class.applications
-        expect(_applications).to eq applications
+        _store = described_class.store
+        expect(_store).to eq store
       end
-      context "#::applications can receive name for naming store" do
-        specify { expect { described_class.applications(name: 'contacts_client_token_store') }.not_to raise_error }
+      context "#::store can receive name for naming store" do
+        specify { expect { described_class.store(name: 'contacts_client_token_store') }.not_to raise_error }
       end
-      context "#::applications storage default name is :app" do
-        specify { expect(described_class.applications.name).to eq :__default__store__ }
+      context "#::store storage default name is :__default__store__" do
+        specify { expect(described_class.store.name).to eq :__default__store__ }
       end
       context "store name is prefixed with __ and suffixed with __store__" do
-        specify { expect(described_class.applications(name: 'contacts_client').name).to eq :__contacts_client__store__ }
+        specify { expect(described_class.store(name: 'contacts_client').name).to eq :__contacts_client__store__ }
       end
     end
-    context "can add and remove applications auth data" do
+    context "can add and remove store auth data" do
       let(:application0) { ApplicationStore::Store.new name: 'application0' }
       let(:application1) { ApplicationStore::Store.new name: 'application1' }
       let(:application2) { ApplicationStore::Store.new name: 'application2' }
-      specify "add applications to applications store" do
-        expect(subject.applications).to be_empty
-        subject.applications.add application0
-        subject.applications.add application1
-        subject.applications.add application2
-        expect(subject.applications).not_to be_empty
-        expect(subject.applications.count).to eq 3
-        expect(subject.applications.to_hash).to eq({__default__store__: {application0: {name: :application0}, application1: {name: :application1}, application2: {name: :application2}}})
+      specify "add store to store store" do
+        expect(subject.store).to be_empty
+        subject.store.add application0
+        subject.store.add application1
+        subject.store.add application2
+        expect(subject.store).not_to be_empty
+        expect(subject.store.count).to eq 3
+        expect(subject.store.to_hash).to eq({__default__store__: {application0: {name: :application0}, application1: {name: :application1}, application2: {name: :application2}}})
       end
-      specify "removes applications" do
-        expect(subject.applications).to be_empty
-        subject.applications.add application0
-        subject.applications.add application1
-        expect(subject.applications)
+      specify "removes store" do
+        expect(subject.store).to be_empty
+        subject.store.add application0
+        subject.store.add application1
+        expect(subject.store)
       end
     end
     context "#create" do
       specify "can create app directly" do
-        subject.applications.create name: 'app'
+        subject.store.create name: 'app'
       end
       specify "returns created app" do
-        app = subject.applications.create name: 'app'
+        app = subject.store.create name: 'app'
         expect(app).to be_instance_of ApplicationStore::Store
         expect(app.name).to eq :app
       end
       specify "access app after creating" do
-        subject.applications.create name: 'app'
-        expect(subject.applications.get :app).to be_instance_of ApplicationStore::Store
-        expect(subject.applications.get(:app).name).to eq :app
+        subject.store.create name: 'app'
+        expect(subject.store.get :app).to be_instance_of ApplicationStore::Store
+        expect(subject.store.get(:app).name).to eq :app
       end
     end
     context "#rename" do
       specify { expect(subject).to respond_to(:rename).with(1).argument }
       specify "renames store" do
-        expect(subject.applications.instance_variable_get(:@store).store.keys).to include(:__default__store__)
-        expect(subject.applications.name).to eq :__default__store__
+        expect(subject.store.instance_variable_get(:@store).store.keys).to include(:__default__store__)
+        expect(subject.store.name).to eq :__default__store__
         subject.rename 'new-store'
-        expect(subject.applications.name).to eq 'new-store'.to_sym
-        expect(subject.applications.instance_variable_get(:@store).store.keys).not_to include(:__default__store__)
+        expect(subject.store.name).to eq 'new-store'.to_sym
+        expect(subject.store.instance_variable_get(:@store).store.keys).not_to include(:__default__store__)
       end
       specify "returns application renamed with outer scope" do
-        expect(subject.rename('another-new-store')).to eq({"another-new-store" => subject.applications.store})
+        expect(subject.rename('another-new-store')).to eq({"another-new-store" => subject.store.store})
       end
     end
     context "#config" do
@@ -159,16 +159,16 @@ RSpec.describe ApplicationStore do
     end
     context "#reset!" do
       specify { expect(described_class).to respond_to(:reset!).with(0).arguments }
-      specify "clears @applications to enable gem to create a store for applications" do
-        expect(described_class.instance_variable_get(:@applications)).to be_falsey
+      specify "clears @store to enable gem to create a new store composite for #store" do
+        expect(described_class.instance_variable_get(:@store)).to be_falsey
 
-        described_class.applications
+        described_class.store
 
-        expect(described_class.instance_variable_get(:@applications)).not_to be_falsey
+        expect(described_class.instance_variable_get(:@store)).not_to be_falsey
 
         described_class.reset!
 
-        expect(described_class.instance_variable_get(:@applications)).to be_falsey
+        expect(described_class.instance_variable_get(:@store)).to be_falsey
       end
     end
     context "#run!" do
@@ -180,7 +180,7 @@ RSpec.describe ApplicationStore do
       after { described_class.instance_variable_set(:@config, nil) }
 
       let(:path_to_config) { File.join(File.expand_path(File.dirname(__FILE__)), 'config/') }
-      let(:applications)    { double :applications }
+      let(:store)    { double :store }
       let(:configurations)  { double :configurations }
       let(:environment)     { :development }
       let(:store)           { double :store }
@@ -196,23 +196,23 @@ RSpec.describe ApplicationStore do
         expect(configurations).to receive(:each_pair)
         described_class.run! environment: :staging, file_name: 'other_application_store.yml'
       end
-      specify "calls “#applications and #add" do
-        expect(described_class).to receive(:applications).and_return(applications)
-        expect(applications).to receive(:create).with(name: "finance_manager").and_return store
+      specify "calls “#store and #add" do
+        expect(described_class).to receive(:store).and_return(store)
+        expect(store).to receive(:create).with(name: "finance_manager").and_return store
         expect(store).to receive(:set).with("configurations", an_instance_of(ActiveSupport::HashWithIndifferentAccess)).and_return store
         expect(store).to receive(:set).with("contacts_client", an_instance_of(ActiveSupport::HashWithIndifferentAccess)).and_return store
         described_class.run!
       end
-      specify "stores configurations of applications for default variables" do
-        expect(described_class.applications.count).to eq 0
+      specify "stores configurations of store for default variables" do
+        expect(described_class.store.count).to eq 0
         described_class.run!
-        expect(described_class.applications.count).to eq 1
+        expect(described_class.store.count).to eq 1
       end
-      specify "stores configurations of applications for given variables" do
-        expect(described_class.applications.count).to eq 0
+      specify "stores configurations of store for given variables" do
+        expect(described_class.store.count).to eq 0
         described_class.run! environment: :staging, file_name: 'other_application_store.yml'
-        expect(described_class.applications.count).to eq 1
-        expect(described_class.applications.finance_manager.configurations.email.smtp.host).to eq 'staging.smtp.y.ch'
+        expect(described_class.store.count).to eq 1
+        expect(described_class.store.finance_manager.configurations.email.smtp.host).to eq 'staging.smtp.y.ch'
       end
     end
   end
