@@ -41,9 +41,14 @@ module ApplicationStore
   def run! environment: Config.environment, file_name: 'application_store.yml'
     content(environment: environment, file_name: file_name) do |content|
       content.each_pair do |key, value|
-        _store = store.create name: key
-        value.each_pair do |key, value|
-          _store.set key, value
+        if value.is_a? Hash
+          _store = store.create name: key
+          value.each_pair do |key, value|
+            _store.set key, value
+          end
+        else
+          # discard construction of bad structure stores
+          raise StandardError.new "the configuration file given has bad structure and needs fix!"
         end
       end
     end
