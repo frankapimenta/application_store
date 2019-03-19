@@ -75,22 +75,35 @@ RSpec.describe ApplicationStore::Config do
   end
   context "class methods" do
     context ".environment" do
-      before do
-        allow(rails_constant).to receive(:env).and_raise NameError.new
-        allow(ENV).to receive(:[]) # not defined by default
-      end
-      let(:rails_constant) { class_double('Rails'). as_stubbed_const }
+      let(:rails_constant) { class_double('Rails').as_stubbed_const }
       specify { expect(described_class).to respond_to(:environment).with(0).arguments }
+      context "when env var APPLICATION_STORE_ENVIRONMENT defines it" do
+        before { allow(ENV).to receive(:[]).with('APPLICATION_STORE_ENVIRONMENT').and_return environment }
+        let(:environment) { :development }
+        specify "expect env var to be looked in ENV" do
+          expect(ENV).to receive(:[]).with('APPLICATION_STORE_ENVIRONMENT')
+          described_class.environment
+        end
+        specify "does not raise when env var is defined" do
+          expect { described_class.environment }.not_to raise_error
+        end
+        specify { expect(described_class.environment).to eq environment }
+      end
+      context "returns rails env when env APPLICATION_STORE_ENVIRONMENT is not defined but Rails.env is" do
+        before { allow(rails_constant).to receive(:env).and_return environment }
+        let(:environment) { :staging }
+        specify "checks for Rails.env" do
+          allow(ENV).to receive(:[]).with('APPLICATION_STORE_ENVIRONMENT')
+          expect(rails_constant).to receive(:env).and_return environment
+          described_class.environment
+        end
+        specify "does not raise when in a rails app" do
+          expect { described_class.environment }.not_to raise_error
+        end
+        specify { expect(described_class.environment).to eq environment }
+      end
       specify "raises if env not defined" do
         expect { described_class.environment }.to raise_error StandardError, "environment not defined as expected"
-      end
-      specify "retrieve environment from Rails.env (is default)" do
-        expect(rails_constant).to receive(:env).and_return 'development'
-        expect(described_class.environment).to eq :development
-      end
-      specify "retrieve environment from RACK_ENV (when not in Rails)" do
-        expect(ENV).to receive(:[]).with('APPLICATION_STORE_ENVIRONMENT').and_return 'development'
-        expect(described_class.environment).to eq :development
       end
     end
     context ".config_path" do

@@ -13,17 +13,16 @@ module ApplicationStore
     end
 
     def configurations environment: self.environment
+      # TODO: raise if content has not the environment key (due to bad file)
       configuration_file.content[configuration_file.file_basename][environment]
     end
 
     class << self
       def environment
         begin
-          Rails.env
+          ENV['APPLICATION_STORE_ENVIRONMENT'] || Rails.env
         rescue NameError
-          _environment = ENV['APPLICATION_STORE_ENVIRONMENT']
-          raise StandardError.new("environment not defined as expected") if _environment.nil?
-          _environment
+          raise StandardError.new("environment not defined as expected")
         end.to_sym
       end
 
