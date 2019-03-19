@@ -1,16 +1,22 @@
 # Application Store
 
-Objective: Enable applications to have a storage that can be accessed globally.
+Objective: Enable applications to have a key-value (dictionary) storage that can be accessed globally across the app's code.
+Sometimes:
+```ruby
+Rails.application.config_for(:<key>)
+```
+is not enough! It does not work with nested values!
 
-When using microservices there are information (like tokens and/or secrets) that need to be stored and accessed globally.
-Application Store provides a structure in order to enable this functionally.
+When using microservices there are many pieces of information (like tokens and/or secrets) that need to be stored and accessed globally.
+Application Store provides a data structure in order to enable this functionally across the application swiftly.
 
 
 Use:
+
 ```ruby
-ApplicationStore.applications(name: 'global-storage')
+ApplicationStore.store
 ```
-to create a global store. See section Usage for more.
+to create a global store. See section **Usage** for more.
 
 ## Installation
 
@@ -31,11 +37,11 @@ Or install it yourself as:
 ## Usage
 
 ```ruby
-applications = ApplicationStore.applications
+store = ApplicationStore.store
   => {:__default__store__ => {}}
 
-some_client  = applications.create name: :some_client
-  => #<ApplicationStore::Store:0x00007faf098b4678 @store=#<ApplicationStore::HashStore:0x00007faf098b4628 @store={:name=>:some_client}>>
+some_client  = store.create name: :some_client
+  => #<ApplicationStore::Store:0x00007ff3758e4f98 @store=#<ApplicationStore::HashStore:0x00007ff3758e4f48 @store={:name=>:some_client}, @parent=nil>, @parent=#<ApplicationStore::HashStore:0x00007ff374b3ded0 @store={:some_client=>#<ApplicationStore::Store:0x00007ff3758e4f98 ...>}, @parent=nil>>
 
 some_client.set :github_api_token, 'pretty token'
   => "pretty_token"
@@ -50,7 +56,7 @@ some_client.github_api_token
 some_client.to_hash
   => {:name => :some_client, :github_api_token => "pretty token"}
 
-applications.to_hash
+store.to_hash
 => {
         :__default__store__ => {
             :some_client => {
@@ -60,24 +66,38 @@ applications.to_hash
         }
     }
 
-# rename application
-applications.rename 'boo'
+# rename global store
+store.rename 'boo'
   => {:boo => {...}}
 
-# get a particular store
-applications.get(:some_client) == some_client
+store.to_hash
+  {
+      :boo => {
+          :some_client => {
+                          :name => :some_client,
+              :github_api_token => "pretty token"
+          }
+      }
+  }
+
+# get a particular store stored in store
+store.get(:some_client) == some_client
+  => true
+# or
+store.some_client == some_client
   => true
 
 # delete a store
-applications.unset :some_client
+store.unset :some_client
   => {:boo => { }}
 
 ```
-Sometimes one needs to use a yaml configuration file to get keys from operating system environment variables.
-You can create a application_store.yml file in application's config folder with this values.
+Many times one needs/has to access a lot of values. Best is to use a yaml configuration file to get values from (operating system) environment variables.
+You can create a YAML file with this values.
+**note**: The default name for the file is 'application_store.yml'. The outermost yaml key in the file must have the same name as the file's name.
 
 ```ruby
-=> lib/config/application_store.yml
+=> config/application_store.yml
 ```
 
 #### example
@@ -110,32 +130,78 @@ application_store:
         api_key: 'staging.asdasdasdasd'
 ````
 The code to run
+
 ```ruby
-  ApplicationStore.run!(environment: :development)
-{
-    "finance_manager" => {
-         "configurations" => {
-            "email" => {
-                "smtp" => {
-                    "host" => "development.smtp.x.ch"
-                },
-                "pop3" => {
-                    "host" => "development.pop3.x.ch"
+# You can pass the configuration file name (when different than the default name) via keyword argument :filename
+#   AplicationStore.run! environment: :development, file_name: 'another_application_store.yml'
+# The outermost key of this yaml file must be :another_application_store
+ApplicationStore.run!(environment: :development)
+=> {
+        "finance_manager" => {
+             "configurations" => {
+                "email" => {
+                    "smtp" => {
+                        "host" => "development.smtp.x.ch"
+                    },
+                    "pop3" => {
+                        "host" => "development.pop3.x.ch"
+                    }
                 }
+            },
+            "contacts_client" => {
+                   "host" => "development.localhost",
+                   "port" => 3001,
+                "api_key" => "development.asdasdasdasd"
             }
-        },
-        "contacts_client" => {
-               "host" => "development.localhost",
-               "port" => 3001,
-            "api_key" => "development.asdasdasdasd"
         }
     }
-}
 
-ApplicationStore.applications.finance_manager.configurations.email.smtp.host
+ApplicationStore.store.finance_manager.configurations.email.smtp.host
   => "development.smtp.x.ch"
 ```
-You can load a yaml file into application store
+
+**note**: The environment to consider is passed directly in ::run. However you can set the environment via ENV var:
+
+````
+APPLICATION_STORE_ENVIRONMENT=<environment> bin/console
+````
+
+This will be the environment the gem is running in when calling ::run without passing the env directly via keword argument.
+
+When in a Rails app, if this the ENV var is not defined, and no environment is set directly via keyword argument, then the Rails.env is considered.
+
+### Console
+
+When runnning the gem in an app or the console you need to set either the root path or the full path to 'application_store.yml' (configuration file).
+
+```
+APPLICATION_STORE_ROOT_PATH=~/development bin/console
+```
+the gem will look for the application_store.yml in ~/development/config
+
+or:
+```
+APPLICATION_STORE_CONFIG_PATH=~/development/config
+```
+to provide the path where the configuration file already is.
+
+The gem will use Rails.root as APPLICATION_STORE_ROOT_PATH and 'config' folder as APPLICATION_STORE_CONFIG_PATH when in a rails app context:
+
+```ruby
+    ApplicationStore.run! #environment and path to config file (application_store.yml) comes from ENV vars
+```
+
+When in an rails app create a initializer and call the same line above.
+
+To set both the path to configuration file and the environment to run in, do:
+
+```
+APPLICATION_STORE_ROOT_PATH=~/development APPLICATION_STORE_ENVIRONMENT=development bin/console
+```
+or
+```
+APPLICATION_STORE_CONFIG_PATH=~/development/config APPLICATION_STORE_ENVIRONMENT=development bin/console
+```
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
