@@ -34,14 +34,11 @@ RSpec.describe ApplicationStore do
     end
     context "::store" do
       let(:store) { described_class.store }
-      specify { expect(described_class).to respond_to(:store) }
+      specify { expect(described_class).to respond_to(:store).with(0).arguments }
       specify { expect(described_class.store).to be_instance_of ApplicationStore::StoreComposite }
       specify "memoizes" do
         _store = described_class.store
         expect(_store).to eq store
-      end
-      context "#::store can receive name for naming store" do
-        specify { expect { described_class.store(name: 'contacts_client_token_store') }.not_to raise_error }
       end
       context "#::store storage default name is :__default__store__" do
         specify { expect(described_class.store.name).to eq :__default__store__ }

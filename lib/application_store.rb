@@ -13,7 +13,7 @@ module ApplicationStore
 
   end
 
-  def store(name: nil)
+  def store
     @store ||= StoreComposite.new
   end
 
