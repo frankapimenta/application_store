@@ -157,6 +157,20 @@ RSpec.describe ApplicationStore do
         expect(described_class.configurations(environment: :staging).finance_manager.configurations.email.smtp.host).to match(/staging/)
       end
     end
+    context "#reset!" do
+      specify { expect(described_class).to respond_to(:reset!).with(0).arguments }
+      specify "clears @applications to enable gem to create a store for applications" do
+        expect(described_class.instance_variable_get(:@applications)).to be_falsey
+
+        described_class.applications
+
+        expect(described_class.instance_variable_get(:@applications)).not_to be_falsey
+
+        described_class.reset!
+
+        expect(described_class.instance_variable_get(:@applications)).to be_falsey
+      end
+    end
     context "#run!" do
       before do
         allow(ApplicationStore::Config).to receive(:environment).and_return environment

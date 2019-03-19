@@ -38,6 +38,10 @@ module ApplicationStore
     configurations
   end
 
+  def reset!
+    @applications = nil
+  end
+
   def run! environment: Config.environment, file_name: 'application_store.yml'
     configurations(environment: environment, file_name: file_name) do |configurations|
       configurations.each_pair do |key, value|
@@ -49,7 +53,7 @@ module ApplicationStore
     end
   end
 
-  module_function :root_path, :applications, :rename, :config, :configurations, :run!
+  module_function :root_path, :applications, :rename, :config, :configurations, :reset!, :run!
 end
 
 require_relative 'application_store/config'
