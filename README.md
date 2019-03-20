@@ -7,8 +7,8 @@ Rails.application.config_for(:<key>)
 ```
 all the time is not enough!
 
-When using microservices there are many pieces of information (like tokens and/or secrets) that need to be stored and accessed globally.
-Application Store provides a data structure in order to enable this functionally across the application swiftly.
+When using microservices there are many pieces of information (like tokens and/or secrets) that need to be stored and accessed globally by the different microservices.
+Application Store provides a data structure in order to enable this functionally across the microservices
 
 
 Use:
