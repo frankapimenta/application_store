@@ -7,7 +7,7 @@ module ApplicationStore
     using Refinements
     extend Forwardable
     include Enumerable, Parenthood
-    def_delegators :store, :clear, :empty?, :has_key?, :to_hash
+    def_delegators :store, :clear, :empty?, :has_key?
 
     def initialize store=Hash.new, parent: nil
       # TODO: hash or hash with indeferent access else raise
@@ -30,5 +30,8 @@ module ApplicationStore
       store.traverse(&block)
     end
 
+    def to_hash
+      traverse { |k,v| [k, v] }
+    end
   end
 end

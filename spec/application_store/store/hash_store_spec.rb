@@ -80,8 +80,8 @@ module ApplicationStore
       context "#to_hash" do
         after { subject.clear }
         specify { expect(subject).to respond_to(:to_hash).with(0).arguments }
-        specify "store receives #to_hash" do
-          expect(store).to receive(:to_hash)
+        specify "calls #traverse" do
+          expect(subject).to receive(:traverse)
           subject.to_hash
         end
         specify "returns a raw native hash with arguments" do
