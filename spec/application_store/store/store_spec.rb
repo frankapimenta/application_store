@@ -97,6 +97,22 @@ module ApplicationStore
           expect(subject.to_hash).to eq({name: :app0})
         end
       end
+      context "#traverse" do
+        let(:data)        { described_class.new }
+        let(:person)      { described_class.new }
+        let(:hash_store)  { described_class.new }
+        let(:traversed)   { hash_store.traverse { |k,v| v.respond_to?(:to_hash) ? [k, v.to_hash] : [k,v] } }
+        before do
+          data.set(:name, "frank")
+          data.set(:person, person)
+          hash_store.set(:data, data)
+        end
+        specify { expect(hash_store).to respond_to(:traverse).with(0).arguments }
+        specify { expect(traversed.fetch(:data)).to be_instance_of Hash }
+        specify "makes changes in deep hash" do
+          expect(traversed.dig(:data, :person)).to be_instance_of Hash
+        end
+      end
       context "attributes" do
         context "#name=" do
           let(:composite) { StoreComposite.new name: 'test-store' }

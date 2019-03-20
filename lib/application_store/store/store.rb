@@ -27,5 +27,9 @@ module ApplicationStore
       end
     end
 
+    def traverse(&block)
+      store.traverse(&block)
+    end
+
   end
 end
