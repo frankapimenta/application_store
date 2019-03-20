@@ -1,3 +1,4 @@
+require 'erb'
 require 'active_support/core_ext/hash'
 require 'yaml'
 
@@ -41,7 +42,7 @@ module ApplicationStore
     end
 
     private def load_file
-      YAML::load_file file_path
+      YAML.load(ERB.new(File.read(file_path)).result)
     end
 
   end

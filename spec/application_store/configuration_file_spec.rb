@@ -3,6 +3,7 @@ module ApplicationStore
     before do
       allow(ENV).to receive(:[]).with('APPLICATION_STORE_CONFIG_PATH')
       allow(ENV).to receive(:[]).with('APPLICATION_STORE_ROOT_PATH').and_return root_path
+      allow(ENV).to receive(:[]).with('APPLICATION_STORE_PORT').and_return 300
     end
 
     subject { described_class.new(location_path: location_path, file_name: file_name) }
@@ -70,6 +71,9 @@ module ApplicationStore
         specify "calls -load_file" do
           expect(subject).to receive_message_chain(:load_file, :with_indifferent_access)
           subject.content
+        end
+        specify "can deal with erb env var" do
+          expect(subject.content[:application_store][:development][:finance_manager][:contacts_client][:port]).to eq 300
         end
         specify "memoizes loaded content from file" do
           expect(subject).to receive(:load_file).once.and_call_original

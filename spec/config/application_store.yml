@@ -9,7 +9,7 @@ application_store:
             host: 'development.pop3.x.ch'
       contacts_client:
         host: 'development.localhost'
-        port: 3001
+        port: <%= ENV['APPLICATION_STORE_PORT'] %>
         api_key: 'development.asdasdasdasd'
     contacts:
       server:

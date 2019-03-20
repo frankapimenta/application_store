@@ -1,5 +1,8 @@
 RSpec.describe ApplicationStore do
-  before { allow(ENV).to receive(:[]).with('APPLICATION_STORE_ROOT_PATH').and_return root_path }
+  before do
+    allow(ENV).to receive(:[]).with('APPLICATION_STORE_ROOT_PATH').and_return root_path
+    allow(ENV).to receive(:[]).with('APPLICATION_STORE_PORT').and_return 300
+  end
   after { subject.instance_variable_set(:@store, nil) }
   let(:root_path) { "/" }
 
