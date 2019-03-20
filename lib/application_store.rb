@@ -40,21 +40,26 @@ module ApplicationStore
 
   def run! environment: Config.environment, file_name: 'application_store.yml'
     content(environment: environment, file_name: file_name) do |content|
-      content.each_pair do |key, value|
-        if value.is_a? Hash
-          _store = store.create name: key
-          value.each_pair do |key, value|
-            _store.set key, value
-          end
-        else
-          # discard construction of bad structure stores
-          raise StandardError.new "the configuration file given has bad structure and needs fix!"
-        end
-      end
+      nested_store(store, content)
     end
   end
 
-  module_function :root_path, :store, :rename, :config, :content, :reset!, :run!
+  # support function that should be private but is not
+  def nested_store store, hash
+    hash.each_pair do |key,hsh|
+      if hsh.is_a?(Hash)
+        new_store = Store.new(name: key, parent: store)
+        nested_store(new_store, hsh)
+
+        store.set key.to_sym, new_store
+      else
+        store.set key.to_sym, hsh
+      end
+    end
+    store
+  end
+
+  module_function :root_path, :store, :rename, :config, :content, :reset!, :run!, :nested_store
 end
 
 require_relative 'application_store/config'

@@ -167,73 +167,42 @@ RSpec.describe ApplicationStore do
     end
     context "#run!" do
       specify { expect(described_class).to respond_to(:run!).with_keywords(:environment, :file_name) }
-      context "with bad structured file" do
-        # application_store:
-        #   development:
-        #     finance_manager: s #no pair under this key is bad (every key after env is a store)
-         before do
-          allow(ApplicationStore::Config).to receive(:environment).and_return environment
-          allow(ApplicationStore::Config).to receive(:config_path).and_return path_to_config
-        end
-        # remove memoization of #config (not to leak to other tests)
-        after { described_class.instance_variable_set(:@config, nil) }
-
-        let(:path_to_config) { File.join(File.expand_path(File.dirname(__FILE__)), 'config/') }
-        let(:environment)     { :development }
-        let(:file_name) { 'bad_application_store.yml' }
-
-        after { described_class.instance_variable_set(:@config, nil) }
-
-        specify "discards the construction of store by raising error" do
-          expect(described_class).not_to receive(:store)
-          expect { described_class.run! environment: environment, file_name: file_name }.to raise_error StandardError, "the configuration file given has bad structure and needs fix!"
-        end
+      # application_store:
+      #   development:
+      #     finance_manager:
+      #       name: "at least one key under main key"
+      before do
+        allow(ApplicationStore::Config).to receive(:environment).and_return environment
+        allow(ApplicationStore::Config).to receive(:config_path).and_return path_to_config
       end
-      context "with good structured file" do
-        # application_store:
-        #   development:
-        #     finance_manager:
-        #       name: "at least one key under main key"
-        before do
-          allow(ApplicationStore::Config).to receive(:environment).and_return environment
-          allow(ApplicationStore::Config).to receive(:config_path).and_return path_to_config
-        end
-        # remove memoization of #config (not to leak to other tests)
-        after { described_class.instance_variable_set(:@config, nil) }
+      # remove memoization of #config (not to leak to other tests)
+      after { described_class.instance_variable_set(:@config, nil) }
 
-        let(:path_to_config) { File.join(File.expand_path(File.dirname(__FILE__)), 'config/') }
-        let(:content)         { double :content }
-        let(:environment)     { :development }
-        let(:store)           { double :store }
-        let(:default_file_name) { 'application_store.yml' }
-        specify "calls #content with default environment and file_name" do
-          expect(described_class).to receive(:content).with(environment: environment, file_name: default_file_name).and_yield content
-          expect(content).to receive(:each_pair)
-          described_class.run!
-        end
-        specify "calls #content with given environment and file_name" do
-          expect(described_class).to receive(:content).with(environment: :staging, file_name: 'other_application_store.yml').and_yield content
-          expect(content).to receive(:each_pair)
-          described_class.run! environment: :staging, file_name: 'other_application_store.yml'
-        end
-        specify "calls “#store and #add" do
-          expect(described_class).to receive(:store).and_return(store)
-          expect(store).to receive(:create).with(name: "finance_manager").and_return store
-          expect(store).to receive(:set).with("configurations", an_instance_of(ActiveSupport::HashWithIndifferentAccess)).and_return store
-          expect(store).to receive(:set).with("contacts_client", an_instance_of(ActiveSupport::HashWithIndifferentAccess)).and_return store
-          described_class.run!
-        end
-        specify "stores content of store for default variables" do
-          expect(described_class.store.count).to eq 0
-          described_class.run!
-          expect(described_class.store.count).to eq 1
-        end
-        specify "stores content of store for given variables" do
-          expect(described_class.store.count).to eq 0
-          described_class.run! environment: :staging, file_name: 'other_application_store.yml'
-          expect(described_class.store.count).to eq 1
-          expect(described_class.store.finance_manager.configurations.email.smtp.host).to eq 'staging.smtp.y.ch'
-        end
+      let(:path_to_config) { File.join(File.expand_path(File.dirname(__FILE__)), 'config/') }
+      let(:content)         { double :content }
+      let(:environment)     { :development }
+      let(:store)           { double :store }
+      let(:default_file_name) { 'application_store.yml' }
+      specify "calls #content with default environment and file_name" do
+        expect(described_class).to receive(:content).with(environment: environment, file_name: default_file_name)
+        described_class.run!
+      end
+      specify "calls #content with given environment and file_name" do
+        expect(described_class).to receive(:content).with(environment: :staging, file_name: 'other_application_store.yml').and_yield content
+        expect(described_class).to receive(:store).and_return store
+        expect(described_class).to receive(:nested_store).with(store, content)
+        described_class.run! environment: :staging, file_name: 'other_application_store.yml'
+      end
+      specify "stores content of store for default variables" do
+        expect(described_class.store.count).to eq 0
+        described_class.run!
+        expect(described_class.store.count).to eq 2
+      end
+      specify "stores content of store for given variables" do
+        expect(described_class.store.count).to eq 0
+        described_class.run! environment: :staging, file_name: 'other_application_store.yml'
+        expect(described_class.store.count).to eq 1
+        expect(described_class.store.finance_manager.configurations.email.smtp.host).to eq 'staging.smtp.y.ch'
       end
     end
   end

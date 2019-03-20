@@ -11,6 +11,10 @@ application_store:
         host: 'development.localhost'
         port: 3001
         api_key: 'development.asdasdasdasd'
+    contacts:
+      server:
+        host: 'contacts.slsag.ch'
+        api_key: 'asdasd'
   staging:
     finance_manager:
       configurations:
