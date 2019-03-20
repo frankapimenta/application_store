@@ -1,11 +1,11 @@
 # Application Store
 
 Objective: Enable applications to have a key-value (dictionary) storage that can be accessed globally across the app's code.
-Sometimes:
+Sometimes doing:
 ```ruby
 Rails.application.config_for(:<key>)
 ```
-is not enough! It does not work with nested values!
+all the time is not enough!
 
 When using microservices there are many pieces of information (like tokens and/or secrets) that need to be stored and accessed globally.
 Application Store provides a data structure in order to enable this functionally across the application swiftly.
