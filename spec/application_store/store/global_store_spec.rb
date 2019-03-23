@@ -21,7 +21,7 @@ module ApplicationStore
       end
       specify "stores parent in @parent" do
         store = {}
-        expect(described_class.new(store, parent: store).instance_variable_get(:@parent)).to eq store
+        expect(described_class.new(store, parent: store).parent).to eq store
       end
     end
     context "instance methods" do
@@ -39,7 +39,7 @@ module ApplicationStore
         specify { expect(subject).to respond_to(:clear).with(0).arguments }
         specify "clears hash" do
           expect(subject).not_to be_empty
-          expect(subject.instance_variable_get(:@store).keys).to eq([:key0, :key1, :key2])
+          expect(subject.store.keys).to eq([:key0, :key1, :key2])
           expect(subject.clear)
           expect(subject).to be_empty
         end
