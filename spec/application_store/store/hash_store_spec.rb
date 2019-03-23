@@ -4,7 +4,9 @@ module ApplicationStore
     it_behaves_like "a hash store"
     # TODO hash store has to have a name because of #parent= spec tests in shared example
     before { subject.set :name, 'hash-store'}
+
     let(:store) { subject.store }
+
     specify { expect(described_class.superclass).to eq GeneralStore }
     specify { expect{ described_class.new }.not_to raise_error }
     context "extended modules" do
