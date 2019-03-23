@@ -29,7 +29,7 @@ RSpec.shared_examples "a getter and setter with indifferent keys" do
     specify { expect(subject).to respond_to(:set).with(2).argument }
     specify "has key and value after set" do
       subject.set :key, :value
-      expect(store[:key]).to eq :value
+      expect(subject.get(:key)).to eq :value
     end
     specify "has key and value after setting via string key" do
       subject.set "key", :value

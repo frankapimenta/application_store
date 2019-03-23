@@ -1,9 +1,13 @@
 module ApplicationStore
   RSpec.describe Store do
+    it_behaves_like "a getter and setter with indifferent keys"
     it_behaves_like "a hash store"
 
-    specify { expect(described_class.superclass).to be GeneralStore }
     subject { described_class.new(name: 'app0') }
+
+    let(:store) { subject.store }
+
+    specify { expect(described_class.superclass).to be GeneralStore }
     context "extended modules" do
       specify { expect(described_class.singleton_class.included_modules).to include Forwardable }
     end
@@ -40,7 +44,6 @@ module ApplicationStore
       end
     end
     context "public instance methods" do
-      let(:store) { subject.instance_variable_get(:@store) }
       context "#each" do
         specify { expect(subject).to respond_to(:each).with(0).argument }
       end
