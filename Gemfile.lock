@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    application_store (0.9.1)
+    application_store (0.9.2)
       activesupport
       request_store
 
