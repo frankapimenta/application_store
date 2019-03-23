@@ -20,15 +20,15 @@ module ApplicationStore
     end
 
     def get key
-      raise NotImplementedError.new "implement method in child class"
+      store.fetch key.to_sym, nil
     end
 
     def set key, value
-      raise NotImplementedError.new "implement method in child class"
+      store[key.to_sym] = value
     end
 
     def unset key
-      raise NotImplementedError.new "implement method in child class"
+      store.delete key.to_sym
     end
 
     def clear

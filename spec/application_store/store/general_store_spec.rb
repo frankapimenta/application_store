@@ -1,5 +1,7 @@
 module ApplicationStore
   RSpec.describe GeneralStore do
+    it_behaves_like "a getter and setter with indifferent keys"
+
     let(:store) { Hash.new }
     subject { described_class.new store }
     specify { expect(described_class).to be_a Class }
@@ -49,18 +51,6 @@ module ApplicationStore
           specify "returns enum if no block is given" do
             expect(subject.each).to be_instance_of Enumerator
           end
-        end
-        context "#get" do
-          specify { expect(subject).to respond_to(:get).with(1).arguments }
-          specify { expect { subject.get :name }.to raise_error NotImplementedError, "implement method in child class"}
-        end
-        context "#set" do
-          specify { expect(subject).to respond_to(:set).with(2).argument }
-          specify { expect { subject.set :name, double(:something) }.to raise_error NotImplementedError, "implement method in child class"}
-        end
-        context "#unset" do
-          specify { expect(subject).to respond_to(:unset).with(1).arguments }
-          specify { expect { subject.unset :name}.to raise_error NotImplementedError, "implement method in child class"}
         end
         context "#clear" do
           specify { expect(subject).to respond_to(:clear).with(0).arguments }

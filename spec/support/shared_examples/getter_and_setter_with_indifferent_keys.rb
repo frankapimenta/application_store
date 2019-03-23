@@ -1,5 +1,6 @@
 RSpec.shared_examples "a getter and setter with indifferent keys" do
-  let(:store) { subject.instance_variable_get(:@store) }
+
+  # let(:store) { subject.instance_variable_get(:@store) }
   context "#get" do
     before do
       subject.set :key, :value
