@@ -7,18 +7,16 @@ module ApplicationStore
     context "included modules" do
       specify { expect(described_class.singleton_class.included_modules).to include Forwardable }
     end
-    context "initialization" do
+    context "on initialization" do
       let(:store) { subject.instance_variable_get(:@store) }
-      specify { expect(store).to be_a GlobalStore }
-      specify { expect(store).to have_key :__default__store__ }
-      specify "default internal store type is HashStore" do
-        expect(subject.store).to be_instance_of HashStore
+      specify "initializes with default values" do
+        expect(subject.instance_variable_get(:@store).to be_instance_of(GlobalStore))
+        expect(subject.store).to be_instance_of(HashStore)
+        expect(subject.instance_variable_get(:@store).store.keys).to eq [:__default__store__]
+        expect(subject.name).to eq :__default__store__
       end
       specify "allows internal store to be passed" do
         expect(described_class.new(internal_store: Hash.new).store).to be_instance_of Hash
-      end
-      specify "default name is :default_store" do
-        expect(subject.name).to eq :__default__store__
       end
       specify "allows passing a name for store" do
         expect(described_class.new(name: :store).name).to eq :__store__store__
@@ -197,24 +195,17 @@ module ApplicationStore
         let(:same_name_store)   { Store.new name: store.name }
         let(:other_store)       { Store.new name: 'other-store' }
         let(:different_parent)  { StoreComposite.new name: 'other-store-composite' }
-        after do
-          # subject.remove store
-          # subject.remove same_name_store
-          # store.parent           = nil
-          # same_name_store.parent = nil
-          # other_store.parent     = nil
-          # subject.destroy!
-        end
         specify { expect(subject).to respond_to(:add).with(1).argument.with_keywords(:force) }
         context "when parent is inexistant" do
+          before { subject.add store }
           specify "raises error if there are stores with the same name" do
-            subject.add store
             expect { subject.add same_name_store }.to raise_error "a store with same name already exists"
           end
         end
         context "when parent is the same" do
+          before { store.parent = subject }
           specify "skips adding if there are no stores with the same name" do
-            store.parent       = subject
+            # works with next line because store has different name
             other_store.parent = subject
             expect(other_store).not_to receive(:parent=)
             expect(subject).not_to receive(:set)
@@ -231,11 +222,6 @@ module ApplicationStore
         end
         context "when parent is different" do
           specify "raises error if a store with the same name exists" do
-            # store            = Store.new name: 'name', parent: subject
-            # different_parent = StoreComposite.new name: 'other-store-composite'
-            # allow(different_parent).to receive(:set)
-            # same_name_store  = Store.new name: store.name, parent: different_parent
-
             store.parent           = subject
             same_name_store.parent = different_parent
             expect { subject.add same_name_store }.to raise_error "a store with same name already exists"
