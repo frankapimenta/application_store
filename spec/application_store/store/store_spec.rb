@@ -7,7 +7,7 @@ module ApplicationStore
     context "extended modules" do
       specify { expect(described_class.singleton_class.included_modules).to include Forwardable }
     end
-    context "initialization" do
+    context "on initialization" do
       let(:fake_store_class) do
         FakeStore = Class.new(GeneralStore) do
           def to_hash
@@ -15,23 +15,24 @@ module ApplicationStore
         end
       end
       let(:fake_store) { fake_store_class.new([]) } # array as store just to be different than hash store
-      specify { expect { described_class.new }.not_to raise_error }
+      specify "does not raise for no store and no parent given" do
+        expect { described_class.new }.not_to raise_error
+      end
       specify "default store is HashStore" do
-        expect(described_class.new.instance_variable_get(:@store)).to be_kind_of GeneralStore
-        expect(described_class.new.instance_variable_get(:@store)).to be_instance_of HashStore
+        expect(described_class.new.store).to be_kind_of GeneralStore
+        expect(described_class.new.store).to be_instance_of HashStore
       end
       specify "gets store from init via dependency injection" do
-        expect(described_class.new(fake_store).instance_variable_get(:@store)).to be_kind_of GeneralStore
+        expect(described_class.new(fake_store).store).to be_kind_of GeneralStore
       end
-      specify "allows app data on initialization" do
+      specify "store given is store retrieven" do
+        expect(described_class.new(fake_store).store).to eq fake_store
+      end
+      specify "allows app name on initialization" do
         expect { described_class.new(name: 'app0') }.not_to raise_error
       end
-      specify "sets app data on init" do
+      specify "sets app name on init" do
         expect(subject.name).to eq :app0
-      end
-      specify "store is given via args" do
-        store = double(:store)
-        expect(described_class.new(store).store).to eq store
       end
       specify "stores parent in @parent" do
         store = double(:store)
