@@ -8,6 +8,12 @@ RSpec.describe ApplicationStore do
 
   specify { expect(subject).to be_instance_of Module }
   context "module methods" do
+    context "::rails_app" do
+      specify "forwards to ::rails_application" do
+        expect(described_class).to receive(:rails_application)
+        described_class::rails_app
+      end
+    end
     context "::rails_application" do
       let(:rails_constant) { class_double('Rails').as_stubbed_const(:transfer_nested_constants => true) }
       let!(:rails_applicationlication_constant)  { class_double('Rails::Application').as_stubbed_const(:transfer_nested_constants => true) }

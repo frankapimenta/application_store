@@ -10,6 +10,10 @@ module ApplicationStore
     ApplicationStore::RailsApplication.new(Rails.application)
   end
 
+  def rails_app
+    rails_application
+  end
+
 
   def root_path
     return ENV['APPLICATION_STORE_ROOT_PATH'] if ENV['APPLICATION_STORE_ROOT_PATH']
@@ -66,7 +70,7 @@ module ApplicationStore
     store
   end
 
-  module_function :rails_application, :root_path, :store, :rename, :config, :content, :reset!, :run!, :nested_store
+  module_function :rails_app, :rails_application, :root_path, :store, :rename, :config, :content, :reset!, :run!, :nested_store
 end
 
 require_relative 'application_store/config'
