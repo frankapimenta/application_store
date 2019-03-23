@@ -1,5 +1,5 @@
 TODO
   refactor
-    remove StoreComposite
+    remove StoreComposite and use GlobalStore instead
     move parent= to GeneralStore and be sure cannot overwrite existing store in parent
       parent adds children into store so that a hierchy is possible
