@@ -31,6 +31,10 @@ module ApplicationStore
       store[key.to_sym] = value
     end
 
+    def []= key, value
+      set key, value
+    end
+
     def unset key
       store.delete key.to_sym
     end

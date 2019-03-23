@@ -42,6 +42,15 @@ RSpec.shared_examples "a getter and setter with indifferent keys" do
       expect(subject.get "key").to eq :value
     end
   end
+  context "#[]=" do
+    let(:value) { :value }
+    specify { expect(subject).to respond_to(:[]=).with(2).arguments }
+    specify "forwards to #get" do
+      expect(subject).to receive(:set).with(:key, value)
+      subject[:key] = value
+    end
+  end
+
   context "#unset" do
     specify { expect(subject).to respond_to(:unset).with(1).argument }
     specify "unsets key (removes key and value from repo)" do
