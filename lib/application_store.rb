@@ -4,6 +4,13 @@ require "application_store/modules/parenthood"
 
 module ApplicationStore
 
+  def rails_app
+    raise StandardError.new "you are not within a Rails application" unless Object.const_defined?(:Rails)
+
+    Rails.application
+  end
+
+
   def root_path
     return ENV['APPLICATION_STORE_ROOT_PATH'] if ENV['APPLICATION_STORE_ROOT_PATH']
 
@@ -59,7 +66,7 @@ module ApplicationStore
     store
   end
 
-  module_function :root_path, :store, :rename, :config, :content, :reset!, :run!, :nested_store
+  module_function :rails_app, :root_path, :store, :rename, :config, :content, :reset!, :run!, :nested_store
 end
 
 require_relative 'application_store/config'
