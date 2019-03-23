@@ -170,6 +170,17 @@ This will be the environment the gem is running in when calling ::run without pa
 
 When in a Rails app, if this the ENV var is not defined, and no environment is set directly via keyword argument, then the Rails.env is considered.
 
+#### ApplicationStore::rails_app
+
+You can use ::rails_app when working within a rails application.
+
+```ruby
+  ApplicationStore::rails_app
+    => ApplicationStore::RailsApplication:0x00007fe9f29011c
+```
+
+You can then send messages to this instance and they will be forward to either #config (if config responds to the message) or #config_for (if config does not responds to the message) of rails application.
+
 ### Console
 
 When runnning the gem in an app or the console you need to set either the root path or the full path to 'application_store.yml' (configuration file).
