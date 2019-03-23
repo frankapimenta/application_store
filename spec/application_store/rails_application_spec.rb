@@ -20,24 +20,34 @@ module ApplicationStore
       specify { expect(subject).to respond_to(:rails_application).with(0).arguments }
       specify { expect(subject.rails_application).to eq rails_application_instance }
     end
-    context "forward to config or to :config_for" do
-      subject       { described_class.new rails_application_instance }
+    context "on method missing" do
+      subject { described_class.new rails_application_instance }
       let(:config)  { double(:config) }
-      specify "forwarding to config" do
-        expect(subject).to receive(:rails_application).twice.and_return rails_application_instance
-        expect(rails_application_instance).to receive(:config).twice.and_return config
-        expect(config).to receive(:respond_to?).and_return true
-        expect(config).to receive(:__send__).with(:host)
-        expect(rails_application_instance).not_to receive(:config_for)
-        subject.host
+      specify "for writters" do
+        expect(subject).to receive(:rails_application).once.and_return rails_application_instance
+        expect(rails_application_instance).to receive(:config).and_return config
+        expect(config).to receive(:host=).with(1)
+        subject.host = 1
       end
-      specify "forwarding to config_for" do
-        expect(subject).to receive(:rails_application).twice.and_return rails_application_instance
-        expect(rails_application_instance).to receive(:config).once.and_return config
-        expect(config).to receive(:respond_to?).and_return false
-        expect(config).not_to receive(:__send__)
-        expect(rails_application_instance).to receive(:config_for).with(:host).and_return config
-        subject.host
+      context "for readers" do
+        context "forward to config or to :config_for" do
+          specify "forwarding to config" do
+            expect(subject).to receive(:rails_application).twice.and_return rails_application_instance
+            expect(rails_application_instance).to receive(:config).twice.and_return config
+            expect(config).to receive(:respond_to?).and_return true
+            expect(config).to receive(:__send__).with(:host)
+            expect(rails_application_instance).not_to receive(:config_for)
+            subject.host
+          end
+          specify "forwarding to config_for" do
+            expect(subject).to receive(:rails_application).twice.and_return rails_application_instance
+            expect(rails_application_instance).to receive(:config).once.and_return config
+            expect(config).to receive(:respond_to?).and_return false
+            expect(config).not_to receive(:__send__)
+            expect(rails_application_instance).to receive(:config_for).with(:host).and_return config
+            subject.host
+          end
+        end
       end
     end
   end
