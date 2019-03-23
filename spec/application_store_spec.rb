@@ -8,19 +8,19 @@ RSpec.describe ApplicationStore do
 
   specify { expect(subject).to be_instance_of Module }
   context "module methods" do
-    context "::rails_app" do
+    context "::rails_application" do
       let(:rails_constant) { class_double('Rails').as_stubbed_const(:transfer_nested_constants => true) }
-      let!(:rails_application_constant)  { class_double('Rails::Application').as_stubbed_const(:transfer_nested_constants => true) }
-      specify { expect(described_class).to respond_to(:rails_app).with(0).arguments }
+      let!(:rails_applicationlication_constant)  { class_double('Rails::Application').as_stubbed_const(:transfer_nested_constants => true) }
+      specify { expect(described_class).to respond_to(:rails_application).with(0).arguments }
       specify "raises if Rails is not defined" do
         expect(Object).to receive(:const_defined?).with(:Rails).and_return false
-        expect { described_class.rails_app }.to raise_error StandardError, "you are not within a Rails application"
+        expect { described_class.rails_application }.to raise_error StandardError, "you are not within a Rails application"
       end
       specify "returns rails application" do
         application = double :application, is_a?: true
         expect(rails_constant).to receive(:application).and_return application
         allow(Object).to receive(:const_defined?).and_return true
-        expect(described_class.rails_app).to be_instance_of ApplicationStore::RailsApplication
+        expect(described_class.rails_application).to be_instance_of ApplicationStore::RailsApplication
       end
     end
     context "::root_path" do
