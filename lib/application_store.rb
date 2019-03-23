@@ -70,6 +70,7 @@ module ApplicationStore
 end
 
 require_relative 'application_store/config'
+require_relative 'application_store/rails_application'
 require_relative 'application_store/store_composite'
 require_relative 'application_store/core_ext/hash'
 
