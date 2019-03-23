@@ -211,10 +211,10 @@ module ApplicationStore
             expect(subject).not_to receive(:set)
             expect { subject.add other_store }.not_to raise_error
           end
-          xspecify "skips adding if a store with the same name exists" do
-            #same_name has no parent when adding subject it already exists
-            store.parent           = subject
-            same_name_store.parent = subject
+          specify "skips adding if a store with the same name exists" do
+            # does not work with next line because store has same name and Parenthood module tries to do self.add
+            # allow(subject).to receive(:add) because of StoreComposite#parent= (Parenthood module)
+            same_name_store = Store.new name: store.name, parent: subject
             expect(same_name_store).not_to receive(:parent=)
             expect(subject).not_to receive(:set)
             expect { subject.add same_name_store }.not_to raise_error
