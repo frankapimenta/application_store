@@ -7,7 +7,7 @@ module ApplicationStore
   def rails_app
     raise StandardError.new "you are not within a Rails application" unless Object.const_defined?(:Rails)
 
-    Rails.application
+    ApplicationStore::RailsApplication.new(Rails.application)
   end
 
 
