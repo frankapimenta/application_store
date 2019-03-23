@@ -3,24 +3,38 @@ module ApplicationStore
     let(:store) { Hash.new }
     subject { described_class.new store }
     specify { expect(described_class).to be_a Class }
-    context "initialization" do
-      specify { expect(subject.instance_variable_get(:@store)).to eq store }
-      specify "raises error if store is nil" do
-        expect { described_class.new nil }.to raise_error StandardError, "a store must be set for the store"
+    context "on initialization" do
+      context "with no assigned parent" do
+        specify "raises no error when parent is not given" do
+          expect { described_class.new store }.not_to raise_error
+        end
+        specify "raises error if no store is given" do
+          expect { described_class.new nil }.to raise_error StandardError, "a store must be set for the store"
+        end
+        specify "holds store in @store ivar when store is given" do
+          expect(subject.instance_variable_get(:@store)).to eq store
+        end
+        context "gets @store via #store" do
+          specify { expect(subject).to respond_to(:store).with(0).arguments }
+          specify { expect(subject.store).to eq store }
+        end
       end
-      specify "accepts parent" do
-        expect { described_class.new store, parent: store }.not_to raise_error
-      end
-      specify "stores parent in @parent" do
-        expect(described_class.new(store, parent: store).instance_variable_get(:@parent)).to eq store
+      context "with assigned parent" do
+        subject { described_class.new store, parent: store }
+        specify "accepts parent" do
+          expect { described_class.new store, parent: store }.not_to raise_error
+        end
+        specify "stores parent in @parent" do
+          expect(described_class.new(store, parent: store).instance_variable_get(:@parent)).to eq store
+        end
+        specify "gets @parent via #parent" do
+          expect(subject).to respond_to(:parent).with(0).arguments
+        end
+        specify { expect(subject.parent).to eq store }
       end
     end
     context "instance methods" do
       context "public methods" do
-        context "#parent" do
-          specify { expect(subject).to respond_to(:parent).with(0).arguments }
-          specify { expect { subject.parent }.to raise_error NotImplementedError, "implement method in child class"}
-        end
         context "#parent=" do
           specify { expect(subject).to respond_to(:parent=).with(1).arguments }
           specify { expect { subject.parent= double }.to raise_error NotImplementedError, "implement method in child class"}

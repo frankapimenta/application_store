@@ -1,6 +1,6 @@
 module ApplicationStore
   class GeneralStore
-    attr_reader :store
+    attr_reader :store, :parent
 
     def initialize store, parent: nil
       raise StandardError.new "a store must be set for the store" if store.nil?
@@ -9,10 +9,6 @@ module ApplicationStore
 
     def method_missing method, *args, &block
       is_writter?(method) ? set(method[0...-1].to_sym, args.pop) : get(method.to_sym)
-    end
-
-    def parent
-      raise NotImplementedError.new "implement method in child class"
     end
 
     def parent= parent
