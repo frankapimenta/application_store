@@ -11,9 +11,9 @@ module ApplicationStore
     attr_reader :name
     def_delegators :store, :get, :set, :unset, :count, :empty?, :has_key?
 
-    def initialize global_store: GlobalStore.new, internal_store: HashStore.new, name: nil
+    def initialize global_store: GlobalStore.new, internal_store: HashStore.new, name: 'default'
       super global_store
-      @name = name.nil? ? :__default__store__ : "__#{name}__store__".to_sym
+      @name = "__#{name}__store__".to_sym
       @store.set @name, internal_store
 
       # tells if store was destroyed and so makes it unusable anymore
