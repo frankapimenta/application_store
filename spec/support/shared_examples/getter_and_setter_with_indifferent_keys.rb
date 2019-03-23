@@ -24,6 +24,13 @@ RSpec.shared_examples "a getter and setter with indifferent keys" do
       expect(subject.get :no_existing_key).to be nil
     end
   end
+  context "#[]" do
+    specify { expect(subject).to respond_to(:[]).with(1).argument }
+    specify "forwards to #get" do
+      expect(subject).to receive(:get).with(:key)
+      subject[:key]
+    end
+  end
   context "#set" do
     specify { expect(subject).to respond_to(:set).with(2).argument }
     specify "has key and value after set" do

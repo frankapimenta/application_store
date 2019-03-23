@@ -23,6 +23,10 @@ module ApplicationStore
       store.fetch key.to_sym, nil
     end
 
+    def [] key
+      get key
+    end
+
     def set key, value
       store[key.to_sym] = value
     end
